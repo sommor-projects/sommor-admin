@@ -1,6 +1,6 @@
 // import Vue from 'vue'
 import { deviceEnquire, DEVICE_TYPE } from '@/utils/device'
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 
 // const mixinsComputed = Vue.config.optionMergeStrategies.computed
 // const mixinsMethods = Vue.config.optionMergeStrategies.methods
@@ -73,4 +73,10 @@ const AppDeviceEnquire = {
   }
 }
 
-export { mixin, AppDeviceEnquire, mixinDevice }
+const GlobalMixin = {
+  methods: {
+    ...mapMutations(['notify'])
+  }
+}
+
+export { mixin, AppDeviceEnquire, mixinDevice, GlobalMixin }

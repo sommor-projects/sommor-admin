@@ -1,7 +1,7 @@
 <template>
   <div class="page-header">
     <div class="page-header-index-wide">
-      <s-breadcrumb />
+      <s-breadcrumb :additional="additionalBreadcrumbs" />
       <div class="detail">
         <div class="main" v-if="!$route.meta.hiddenHeaderContent">
           <div class="row">
@@ -53,6 +53,10 @@ export default {
     avatar: {
       type: String,
       default: '',
+      required: false
+    },
+    additionalBreadcrumbs: {
+      type: Array,
       required: false
     }
   },

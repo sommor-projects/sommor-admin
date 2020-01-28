@@ -11,25 +11,29 @@ import { ACCESS_TOKEN } from '@/store/mutation-types'
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 const whiteList = ['login', 'register', 'registerResult'] // no redirect whitelist
-const defaultRoutePath = '/dashboard/workplace'
+const defaultRoutePath = '/dashboard'
 
 router.beforeEach((to, from, next) => {
   NProgress.start() // start progress bar
   to.meta && (typeof to.meta.title !== 'undefined' && setDocumentTitle(`${to.meta.title} - ${domTitle}`))
+  console.log('route before', to, from)
   if (Vue.ls.get(ACCESS_TOKEN)) {
     /* has token */
     if (to.path === '/user/login') {
       next({ path: defaultRoutePath })
       NProgress.done()
     } else {
+      console.log('store.getters.roles', store.getters.roles)
       if (store.getters.roles.length === 0) {
         store
           .dispatch('GetInfo')
           .then(res => {
-            const roles = res.result && res.result.role
+            console.log('GetInfo', res)
+            const roles = res.result && res.result.roles
             store.dispatch('GenerateRoutes', { roles }).then(() => {
               // 根据roles权限生成可访问的路由表
               // 动态添加可访问路由表
+              console.log('GenerateRoutes', store.getters.addRouters)
               router.addRoutes(store.getters.addRouters)
               const redirect = decodeURIComponent(from.query.redirect || to.path)
               if (to.path === redirect) {

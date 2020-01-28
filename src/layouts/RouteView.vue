@@ -1,4 +1,6 @@
 <script>
+import md5 from 'md5'
+
 export default {
   name: 'RouteView',
   props: {
@@ -10,15 +12,20 @@ export default {
   data () {
     return {}
   },
+  computed: {
+    routeKey () {
+      return md5(this.$route.fullPath)
+    }
+  },
   render () {
     const { $route: { meta }, $store: { getters } } = this
     const inKeep = (
       <keep-alive>
-        <router-view />
+        <router-view key={ this.routeKey } />
       </keep-alive>
     )
     const notKeep = (
-      <router-view />
+      <router-view key={ this.routeKey } />
     )
     // 这里增加了 multiTab 的判断，当开启了 multiTab 时
     // 应当全部组件皆缓存，否则会导致切换页面后页面还原成原始状态

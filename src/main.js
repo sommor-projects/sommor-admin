@@ -7,10 +7,11 @@ import App from './App.vue'
 import router from './router'
 import store from './store/'
 import { VueAxios } from './utils/request'
+import { GlobalMixin } from './utils/mixin'
 
 // mock
 // WARNING: `mockjs` NOT SUPPORT `IE` PLEASE DO NOT USE IN `production` ENV.
-import './mock'
+// import './mock'
 
 import bootstrap from './core/bootstrap'
 import './core/lazy_use'
@@ -18,6 +19,7 @@ import './permission' // permission control
 import './utils/filter' // global filter
 import './components/global.less'
 
+Vue.mixin(GlobalMixin)
 Vue.config.productionTip = false
 
 // mount axios Vue.$http and this.$http

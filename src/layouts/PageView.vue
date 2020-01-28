@@ -1,7 +1,7 @@
 <template>
   <div :style="!$route.meta.hiddenHeaderContent ? 'margin: -24px -24px 0px;' : null">
     <!-- pageHeader , route meta :true on hide -->
-    <page-header v-if="!$route.meta.hiddenHeaderContent" :title="pageTitle" :logo="logo" :avatar="avatar">
+    <page-header v-if="!$route.meta.hiddenHeaderContent" :title="pageHeaderTitle" :logo="logo" :avatar="avatar" :additionalBreadcrumbs="additionalBreadcrumbs">
       <slot slot="action" name="action"></slot>
       <slot slot="content" name="headerContent"></slot>
       <div slot="content" v-if="!this.$slots.headerContent && description">
@@ -41,10 +41,12 @@
       <div class="page-header-index-wide">
         <slot>
           <!-- keep-alive  -->
-          <keep-alive v-if="multiTab">
-            <router-view ref="content" />
-          </keep-alive>
-          <router-view v-else ref="content" />
+<!--          <keep-alive v-if="multiTab">-->
+<!--            <router-view :key="routeKey" ref="content" />-->
+<!--          </keep-alive>-->
+<!--          <router-view :key="routeKey" v-else ref="content" />-->
+
+          <router-view :key="routeKey" v-if="isPageViewRouterAlive" ref="content" />
         </slot>
       </div>
     </div>
@@ -54,6 +56,9 @@
 <script>
 import { mapState } from 'vuex'
 import PageHeader from '@/components/PageHeader'
+import md5 from 'md5'
+import { axios } from '@/utils/request'
+import { setDocumentTitle, domTitle } from '@/utils/domUtil'
 
 export default {
   name: 'PageView',
@@ -67,7 +72,12 @@ export default {
     },
     title: {
       type: [String, Boolean],
-      default: true
+      default: true,
+      required: false
+    },
+    pageRenderApi: {
+      type: Function,
+      required: false
     },
     logo: {
       type: String,
@@ -80,18 +90,66 @@ export default {
   },
   data () {
     return {
-      pageTitle: null,
+      isPageViewRouterAlive: true,
+      additionalBreadcrumbs: [],
+      subjectAction: undefined,
+      subjectTitle: undefined,
+      subjectTaxonomyTitle: undefined,
       description: null,
       linkList: [],
       extraImage: '',
       search: false,
-      tabs: {}
+      tabs: {},
+      pageRenderListeners: []
+    }
+  },
+  provide () {
+    return {
+      reloadPageView: this.reloadPageView,
+      renderPageView: this.renderPageView,
+      addPageRenderListener: this.addPageRenderListener,
+      setPageSubjectTitle: this.setPageSubjectTitle,
+      setPageSubjectAction: this.setPageSubjectAction,
+      addPageBreadcrumb: this.addPageBreadcrumb,
+      setPageSubjectTaxonomyTitle: this.setPageSubjectTaxonomyTitle
     }
   },
   computed: {
     ...mapState({
       multiTab: state => state.app.multiTab
-    })
+    }),
+    routeKey () {
+      console.log('pageView routeKey', md5(this.$route.fullPath), this.$route.fullPath)
+      return md5(this.$route.fullPath)
+    },
+    pageTitle () {
+      let pageTitle = ''
+      if (this.subjectAction) {
+        pageTitle += this.subjectAction
+      }
+      if (this.subjectTitle) {
+        pageTitle += this.subjectTitle
+      }
+      if (this.subjectTaxonomyTitle) {
+        if (this.subjectTitle) {
+          pageTitle += '的'
+        }
+        pageTitle += this.subjectTaxonomyTitle
+      }
+      return pageTitle
+    },
+    pageHeaderTitle () {
+      if (this.title === false) {
+        return false
+      }
+      return this.title !== true ? this.title : (this.pageTitle || this.$route.meta.title)
+    }
+  },
+  created () {
+    if (this.pageRenderApi) {
+      this.renderPageView(this.pageRenderApi)
+    }
+    this.notify()
   },
   mounted () {
     this.tabs = this.directTabs
@@ -100,11 +158,55 @@ export default {
   updated () {
     this.getPageMeta()
   },
+  watch: {
+    pageHeaderTitle (title) {
+      if (title) {
+        setDocumentTitle(`${title} - ${domTitle}`)
+      }
+    }
+  },
   methods: {
+    reloadPageView () {
+      this.isPageViewRouterAlive = false
+      this.$nextTick(() => {
+        this.isPageViewRouterAlive = true
+      })
+    },
+    addPageRenderListener (listener) {
+      this.pageRenderListeners.push(listener)
+    },
+    setPageSubjectTaxonomyTitle (subjectTaxonomyTitle) {
+      this.subjectTaxonomyTitle = subjectTaxonomyTitle
+    },
+    setPageSubjectTitle (subjectTitle) {
+      this.subjectTitle = subjectTitle
+    },
+    setPageSubjectAction (subjectAction) {
+      this.subjectAction = subjectAction
+    },
+    addPageBreadcrumb (breadcrumbs) {
+      this.additionalBreadcrumbs = breadcrumbs
+    },
+    async renderPageView (api) {
+      let pageViewUrl = api
+      if (typeof api === 'function') {
+        pageViewUrl = this.pageRenderApi()
+      }
+      console.log('pageViewUrl', pageViewUrl)
+      if (pageViewUrl !== false) {
+        const res = await axios(pageViewUrl)
+        if (res.success) {
+          const pageView = res.result
+          console.log('renderPageView', pageView)
+          this.$emit('pageRender', pageView)
+          this.pageRenderListeners.forEach(function (listener) {
+            listener(pageView)
+          })
+          return pageView
+        }
+      }
+    },
     getPageMeta () {
-      // eslint-disable-next-line
-      this.pageTitle = (typeof(this.title) === 'string' || !this.title) ? this.title : this.$route.meta.title
-
       const content = this.$refs.content
       if (content) {
         if (content.pageMeta) {

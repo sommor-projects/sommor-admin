@@ -97,3 +97,9 @@ Vue.prototype.$info = Modal.info
 Vue.prototype.$success = Modal.success
 Vue.prototype.$error = Modal.error
 Vue.prototype.$warning = Modal.warning
+
+import SubjectSelect from '@/components/SubjectSelect'
+Vue.component('subject-select', SubjectSelect)
+
+import FileUploader from '@/components/FileUploader'
+Vue.component('file-uploader', FileUploader)

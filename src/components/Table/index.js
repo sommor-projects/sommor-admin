@@ -306,6 +306,7 @@ export default {
       </a-table>
     )
 
+    console.log('showAlert', showAlert)
     return (
       <div class="table-wrapper">
         { showAlert ? this.renderAlert() : null }

@@ -1,54 +1,25 @@
 import { axios } from '@/utils/request'
 
-export function getRootTaxonomyTrees () {
+export function getPostList (params) {
   return axios({
-    url: '/taxonomy/trees/root',
-    method: 'get'
-  })
-}
-
-export function getTaxonomyTrees (params) {
-  return axios({
-    url: '/taxonomy/trees',
+    url: '/post/list',
     params,
     method: 'get'
   })
 }
 
-export function getTaxonomyList (params) {
+export function renderPostForm ({ id, type }) {
   return axios({
-    url: '/taxonomy/list',
-    params,
+    url: '/post/form',
+    params: { id, type },
     method: 'get'
   })
 }
 
-export function renderTaxonomyForm ({ id, parentId }) {
-  return axios({
-    url: '/taxonomy/form',
-    params: { id, parentId },
-    method: 'get'
-  })
+export function savePost (params) {
+  return axios.post('/post/save', params)
 }
 
-export function saveTaxonomy (params) {
-  return axios.post('/taxonomy/save', params)
-}
-
-export function forwardTaxonomy (record) {
-  return axios.post('/taxonomy/update-priority', {
-    id: record.id,
-    direction: 'forward'
-  })
-}
-
-export function backwardTaxonomy (record) {
-  return axios.post('/taxonomy/update-priority', {
-    id: record.id,
-    direction: 'backward'
-  })
-}
-
-export function deleteTaxonomy (record) {
-  return axios.post('/taxonomy/' + record.id + '/delete')
+export function deletePost (record) {
+  return axios.post('/post/' + record.id + '/delete')
 }

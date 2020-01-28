@@ -43,7 +43,7 @@
       <a-layout-content :style="{ height: '100%', margin: '24px 24px 0', paddingTop: fixedHeader ? '64px' : '0' }">
         <multi-tab v-if="multiTab"></multi-tab>
         <transition name="page-transition">
-          <route-view />
+          <route-view :key="routeKey" v-if="isRouterAlive" />
         </transition>
       </a-layout-content>
 
@@ -71,6 +71,8 @@ import GlobalHeader from '@/components/GlobalHeader'
 import GlobalFooter from '@/components/GlobalFooter'
 import SettingDrawer from '@/components/SettingDrawer'
 
+import md5 from 'md5'
+
 export default {
   name: 'BasicLayout',
   mixins: [mixin, mixinDevice],
@@ -85,7 +87,8 @@ export default {
     return {
       production: config.production,
       collapsed: false,
-      menus: []
+      menus: [],
+      isRouterAlive: true
     }
   },
   computed: {
@@ -101,6 +104,9 @@ export default {
         return '256px'
       }
       return '80px'
+    },
+    routeKey () {
+      return md5(this.$route.fullPath)
     }
   },
   watch: {
@@ -123,6 +129,11 @@ export default {
       })
     }
   },
+  provide () {
+    return {
+      reload: this.reload
+    }
+  },
   methods: {
     ...mapActions(['setSidebar']),
     toggle () {
@@ -143,6 +154,14 @@ export default {
     },
     drawerClose () {
       this.collapsed = false
+    },
+    reload () {
+      this.isRouterAlive = false
+      this.$loading.show()
+      this.$nextTick(function () {
+        this.isRouterAlive = true
+        this.$loading.hide()
+      })
     }
   }
 }

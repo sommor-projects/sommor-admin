@@ -12,6 +12,7 @@ const service = axios.create({
 })
 
 const err = (error) => {
+  console.log('error: ', error)
   if (error.response) {
     const data = error.response.data
     const token = Vue.ls.get(ACCESS_TOKEN)
@@ -42,14 +43,24 @@ const err = (error) => {
 service.interceptors.request.use(config => {
   const token = Vue.ls.get(ACCESS_TOKEN)
   if (token) {
-    config.headers['Access-Token'] = token // 让每个请求携带自定义 token 请根据实际情况自行修改
+    config.headers['X-Authentication'] = token // 让每个请求携带自定义 token 请根据实际情况自行修改
   }
+  config.headers['Content-Type'] = 'application/json; charset=UTF-8'
+  console.log(config)
   return config
 }, err)
 
 // response interceptor
 service.interceptors.response.use((response) => {
-  return response.data
+  console.log(response)
+  const data = response.data
+  if (!data.success && data.errorMsg) {
+    notification.error({
+      message: data.errorCode,
+      description: data.errorMsg
+    })
+  }
+  return data
 }, err)
 
 const installer = {

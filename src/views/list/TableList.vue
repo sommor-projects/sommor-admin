@@ -112,8 +112,8 @@
 <script>
 import moment from 'moment'
 import { STable, Ellipsis } from '@/components'
-import StepByStepModal from './modules/StepByStepModal'
-import CreateForm from './modules/CreateForm'
+import StepByStepModal from '@/views/list/modules/StepByStepModal'
+import CreateForm from '@/views/list/modules/CreateForm'
 import { getRoleList, getServiceList } from '@/api/manage'
 
 const statusMap = {

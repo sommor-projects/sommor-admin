@@ -3,6 +3,17 @@ import { login, getInfo, logout } from '@/api/login'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
 import { welcome } from '@/utils/util'
 
+function saveLoginUser (commit, loginUser) {
+  Vue.ls.set(ACCESS_TOKEN, loginUser.token, loginUser.expireTime)
+  commit('SET_TOKEN', loginUser.token)
+  commit('SET_ROLES', loginUser.roles)
+
+  const userProfile = loginUser.userProfile
+  commit('SET_INFO', userProfile)
+  commit('SET_NAME', { name: userProfile.name, welcome: welcome() })
+  commit('SET_AVATAR', userProfile.avatar)
+}
+
 const user = {
   state: {
     token: '',
@@ -37,10 +48,13 @@ const user = {
     Login ({ commit }, userInfo) {
       return new Promise((resolve, reject) => {
         login(userInfo).then(response => {
-          const result = response.result
-          Vue.ls.set(ACCESS_TOKEN, result.token, 7 * 24 * 60 * 60 * 1000)
-          commit('SET_TOKEN', result.token)
-          resolve()
+          if (response.success) {
+            const loginUser = response.result
+            console.log('loginUser', loginUser)
+            loginUser.roles = []
+            saveLoginUser(commit, loginUser)
+            resolve(loginUser)
+          }
         }).catch(error => {
           reject(error)
         })
@@ -51,27 +65,8 @@ const user = {
     GetInfo ({ commit }) {
       return new Promise((resolve, reject) => {
         getInfo().then(response => {
-          const result = response.result
-
-          if (result.role && result.role.permissions.length > 0) {
-            const role = result.role
-            role.permissions = result.role.permissions
-            role.permissions.map(per => {
-              if (per.actionEntitySet != null && per.actionEntitySet.length > 0) {
-                const action = per.actionEntitySet.map(action => { return action.action })
-                per.actionList = action
-              }
-            })
-            role.permissionList = role.permissions.map(permission => { return permission.permissionId })
-            commit('SET_ROLES', result.role)
-            commit('SET_INFO', result)
-          } else {
-            reject(new Error('getInfo: roles must be a non-null array !'))
-          }
-
-          commit('SET_NAME', { name: result.name, welcome: welcome() })
-          commit('SET_AVATAR', result.avatar)
-
+          const loginUser = response.result
+          saveLoginUser(commit, loginUser)
           resolve(response)
         }).catch(error => {
           reject(error)
