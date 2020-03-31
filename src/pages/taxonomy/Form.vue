@@ -3,11 +3,11 @@
     <a-row :gutter="24">
       <a-col :xl="16" :lg="24" :md="24" :sm="24" :xs="24">
         <a-card :bordered="false" title="分类基础信息">
-          <s-field name="parentId"></s-field>
-          <s-field name="title"></s-field>
-          <s-field name="subTitle"></s-field>
-          <s-field name="slug"></s-field>
-          <s-field name="fieldStyle"></s-field>
+          <s-field :field="formFields.parentId"></s-field>
+          <s-field :field="formFields.title"></s-field>
+          <s-field :field="formFields.subTitle"></s-field>
+          <s-field :field="formFields.name"></s-field>
+          <s-field :field="formFields.fieldStyle"></s-field>
           <a-form-item>
             <a-button htmlType="submit" type="primary">保存</a-button>
             <a-button style="margin-left: 8px" @click="handleSubmitAndContinue">保存并继续{{formActionTitle}}</a-button>
@@ -54,7 +54,7 @@
 
 <script>
 import form from '@/mixins/form'
-import type from '@/pages/taxonomy/type'
+import taxonomy from '@/pages/taxonomy/taxonomy'
 
 import ATreeSelect from 'ant-design-vue/es/tree-select'
 import 'ant-design-vue/es/tree-select/style/index'
@@ -64,7 +64,7 @@ import { SField } from '@/components/Field'
 export default {
   name: 'Form',
   components: { ATreeSelect, SField },
-  mixins: [form, type],
+  mixins: [form, taxonomy],
   data () {
     return {
       taxonomyOptions: [],
@@ -106,7 +106,7 @@ export default {
     },
     formSubmitRedirectRoute (res) {
       return {
-        name: this.type ? ('taxonomy-' + this.type + '-list') : 'taxonomy-list',
+        name: this.taxonomy ? ('taxonomy-' + this.taxonomy + '-list') : 'taxonomy-list',
         query: {
           parentId: res.result.parentId
         }

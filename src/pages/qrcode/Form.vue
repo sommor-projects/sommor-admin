@@ -19,38 +19,26 @@
 import { PageView } from '@/layouts'
 import form from '@/mixins/form'
 import { SField, SFieldset } from '@/components/Field'
-import taxonomy from '@/pages/taxonomy/taxonomy'
 
 export default {
-  name: 'PostForm',
+  name: 'QrCodeForm',
   components: { PageView, SField, SFieldset },
-  mixins: [form, taxonomy],
+  mixins: [form],
   data () {
     return {
     }
   },
   created () {
-    this.formRenderParam.taxonomy = this.taxonomy
   },
   computed: {
     subject () {
-      return 'post'
+      return 'qrcode'
     }
   },
   methods: {
     formSavedSuccessDescription (res) {
-      const title = res.result.title
+      const title = res.result.code
       return `${title} 保存成功`
-    },
-    formSubmitRedirectRoute () {
-      if (this.taxonomy) {
-        return {
-          name: this.subject + '-' + this.taxonomy + '-list'
-        }
-      }
-      return {
-        name: this.subject + '-list'
-      }
     }
   }
 }

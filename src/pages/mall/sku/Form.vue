@@ -1,8 +1,8 @@
 <template>
   <a-card :bordered="false">
-    <template v-if="taxonomyNotSpecified">
+    <template v-if="false">
       <a-form @submit="handleSubjectTaxonomyFormSubmit" :form="form" v-if="formInitialized">
-        <s-field :field="formFields.taxonomy"></s-field>
+        <s-field :field="formFields.productId"></s-field>
         <div>
           <a-button htmlType="submit" type="primary">下一步</a-button>
         </div>
@@ -10,11 +10,14 @@
     </template>
     <template v-else>
       <a-form @submit="handleSubmit" :form="form" v-if="formInitialized">
+        <subject-select :field="formFields.shopId"></subject-select>
+        <subject-select :field="formFields.productId"></subject-select>
+        <s-field :field="formFields.price"></s-field>
+        <s-field :field="formFields.costPrice"></s-field>
+        <s-field :field="formFields.inventory"></s-field>
         <s-field :field="formFields.title"></s-field>
-        <s-field :field="formFields.subTitle"></s-field>
         <s-fieldset :fields="formFields.taxonomy"></s-fieldset>
-        <subject-select :field="formFields.userId"></subject-select>
-        <s-field :field="formFields.logo"></s-field>
+        <s-field :field="formFields.pictures"></s-field>
         <div>
           <a-button htmlType="submit" type="primary">保存</a-button>
           <a-button style="margin-left: 8px" @click="handleSubmitAndContinue">保存并继续{{formActionTitle}}</a-button>
@@ -22,38 +25,50 @@
       </a-form>
     </template>
   </a-card>
-</template>
+</template>s
 
 <script>
 import { PageView } from '@/layouts'
 import form from '@/mixins/form'
 import { SField, SFieldset } from '@/components/Field'
-import taxonomy from '@/pages/taxonomy/taxonomy'
 
 export default {
-  name: 'ShopForm',
+  name: 'SkuForm',
   components: { PageView, SField, SFieldset },
-  mixins: [form, taxonomy],
+  mixins: [form],
+  data () {
+    return {
+    }
+  },
   created () {
+    if (this.$route.query) {
+      if (this.$route.query.shopId) {
+        this.formRenderParam.shopId = this.$route.query.shopId
+      }
+      if (this.$route.query.productId) {
+        this.formRenderParam.productId = this.$route.query.productId
+      }
+    }
   },
   computed: {
     subject () {
-      return 'shop'
+      return 'sku'
     }
   },
   methods: {
+    onFormRender (form) {
+    },
     formSavedSuccessDescription (res) {
       const title = res.result.title
       return `${title} 保存成功`
     },
-    formSubmitRedirectRoute () {
-      if (this.taxonomy && this.subject !== this.taxonomy) {
-        return {
-          name: this.subject + '-' + this.taxonomy + '-list'
-        }
+    formSubmitRedirectRoute (res) {
+      const query = {
+        shopId: res.result.shopId
       }
       return {
-        name: this.subject + '-list'
+        name: this.subject + '-list',
+        query
       }
     }
   }

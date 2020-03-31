@@ -17,14 +17,13 @@
       :columns="columns"
       :rowSelection="rowSelection"
     >
-
-        <span slot="action" slot-scope="text, record">
-          <template>
-            <a @click="handleEditAction(record)">编辑</a>
-            <a-divider type="vertical" />
-            <a @click="handleDeleteAction(record)">删除</a>
-          </template>
-        </span>
+      <span slot="action" slot-scope="text, record">
+        <template>
+          <a @click="handleEditAction(record)">编辑</a>
+          <a-divider type="vertical" />
+          <a @click="handleDeleteAction(record)">删除</a>
+        </template>
+      </span>
     </s-table>
   </a-card>
 </template>
@@ -33,16 +32,14 @@
 import { STable } from '@/components'
 import { PageView } from '@/layouts'
 import table from '@/mixins/table'
-import type from '@/pages/taxonomy/type'
-import { axios } from '@/utils/request'
 
 export default {
-  name: 'SpuTable',
+  name: 'QrCodeTable',
   components: {
     PageView,
     STable
   },
-  mixins: [table, type],
+  mixins: [table],
   data () {
     return {
       columns: [
@@ -51,8 +48,8 @@ export default {
           dataIndex: 'id'
         },
         {
-          title: '名称',
-          dataIndex: 'title'
+          title: '编码',
+          dataIndex: 'code'
         },
         {
           title: '操作',
@@ -62,29 +59,14 @@ export default {
       ]
     }
   },
-  inject: ['addPageRenderListener', 'renderPageView', 'setPageSubjectTitle', 'addPageBreadcrumb'],
   computed: {
     subject () {
-      return 'spu'
-    },
-    queryParams () {
-      return {
-        shopId: (this.$route.query && this.$route.query.shopId) || 0
-      }
+      return 'qrcode'
     }
   },
-  async mounted () {
-    const res = await axios({
-      url: '/shop/detail',
-      method: 'get',
-      params: {
-        id: this.$route.query.shopId
-      }
-    })
-    if (res.success) {
-      this.setPageSubjectTitle(res.result.data.title)
-      console.log('spu created', res.result.data.title)
-    }
+  async created () {
+  },
+  methods: {
   }
 }
 </script>

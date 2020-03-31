@@ -1,18 +1,21 @@
 export default {
-  inject: ['getFormData', 'getFormField'],
   props: {
-    name: {
-      type: String,
-      default: undefined,
-      required: false
-    },
     field: {
+      type: Object,
+      required: true
+    },
+    model: {
       type: Object,
       default: null,
       required: false
     },
     type: {
       type: Object,
+      default: null,
+      required: false
+    },
+    name: {
+      type: String,
       default: null,
       required: false
     }
@@ -27,10 +30,11 @@ export default {
       return this.name || this.formField.fullName
     },
     fieldType () {
-      return this.type || this.formField.type
+      return this.formField.tag
     },
     fieldSubmitName () {
       const name = this.formField.fullName
+      console.log('formField', name, this.formField)
       if (name.indexOf('.') !== -1) {
         const a = name.split('.')
         let fieldSubmitName = a[0]
@@ -43,11 +47,7 @@ export default {
     }
   },
   created () {
-    if (this.field) {
-      this.formField = this.field
-    } else if (this.name) {
-      this.formField = this.getFormField(this.name)
-    }
+    this.formField = this.field
     console.log('field: ', this.fieldName, this.fieldType, this.fieldSubmitName)
   }
 }

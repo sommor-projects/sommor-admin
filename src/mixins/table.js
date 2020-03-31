@@ -10,7 +10,8 @@ export default {
         showPagination: 'auto',
         alert: false,
         data: parameter => {
-          const params = Object.assign(this.queryParams || {}, parameter)
+          const params = {}
+          Object.assign(params, this.queryParams || {}, parameter)
           console.log('table loadData queryParams: ', params)
           const url = '/' + this.subject + '/list'
 
@@ -22,13 +23,22 @@ export default {
 
           return axios(options).then(res => {
             console.log('curdTable load data: ', res)
+            this.searchForm = res.result.searchForm
             return res.result.data
           })
         }
       },
       selectedRowKeys: [],
       selectedRows: [],
-      queryParams: {}
+      queryParams: {},
+      addFormQuery: {},
+      searchForm: null
+    }
+  },
+  created () {
+    if (this.$route.query) {
+      this.queryParams = Object.assign(this.queryParams, this.$route.query)
+      console.log('table queryParams', this.queryParams)
     }
   },
   computed: {
@@ -63,6 +73,8 @@ export default {
       const query = {}
       if (record) {
         query['id'] = record.id
+      } else {
+        Object.assign(query, this.addFormQuery)
       }
       const meta = this.$store.getters.routeMetas[routeName]
       if (meta && meta.queryParamNames) {

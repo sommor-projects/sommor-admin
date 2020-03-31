@@ -2,12 +2,12 @@
   <div>
     <template v-if="formField">
       <a-form-item :label="formField.title">
-        <template v-if="fieldType==='text'">
+        <template v-if="fieldType==='input'">
           <template v-if="formField.style==='textarea'">
             <a-textarea
               v-decorator="[
             `${fieldName}`,
-            {rules: [{ required: formField.constraints.required, message: '请输入' + formField.title }]}
+            {rules: [{ required: formField.constraint.required, message: '请输入' + formField.title }], initialValue: formField.value}
           ]"
               :name="fieldSubmitName"
               :placeholder="'请输入' + formField.title" />
@@ -16,10 +16,10 @@
             <a-input
               v-decorator="[
             `${fieldName}`,
-            {rules: [{ required: formField.constraints.required, message: '请输入' + formField.title }]}
+            {rules: [{ required: formField.constraint.required, message: '请输入' + formField.title }], initialValue: formField.value}
           ]"
               :name="fieldSubmitName"
-              :disabled="formField.constraints.disabled"
+              :disabled="formField.constraint.disabled"
               :placeholder="'请输入' + formField.title" />
           </template>
         </template>
@@ -35,7 +35,7 @@
               :options="formField.options"
               v-decorator="[
             `${fieldName}`,
-            {rules: [{ required: formField.constraints.required, message: '请选择' + formField.title }]}
+            {rules: [{ required: formField.constraint.required, message: '请选择' + formField.title }], initialValue: formField.value}
               ]"
             >
             </a-cascader>
@@ -50,7 +50,7 @@
               :multiple="formField.multiple"
               v-decorator="[
             `${fieldName}`,
-            {rules: [{ required: formField.constraints.required, message: '请选择' + formField.title }]}
+            {rules: [{ required: formField.constraint.required, message: '请选择' + formField.title }], initialValue: formField.value}
               ]"
             >
             </a-tree-select>
@@ -64,7 +64,7 @@
               :multiple="formField.multiple"
               v-decorator="[
             `${fieldName}`,
-            {rules: [{ required: formField.constraints.required, message: '请选择' + formField.title }]}
+            {rules: [{ required: formField.constraint.required, message: '请选择' + formField.title }], initialValue: formField.value}
               ]"
             >
             </a-select>
@@ -76,7 +76,7 @@
           <a-switch
             v-decorator="[
               `${fieldName}`,
-              { valuePropName: 'checked' }
+              { valuePropName: 'checked', initialValue: formField.value}
             ]"
             :name="fieldSubmitName" />
         </template>

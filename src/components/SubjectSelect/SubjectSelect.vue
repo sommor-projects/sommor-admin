@@ -9,7 +9,7 @@
       @change="handleChange"
       :notFoundContent="fetching ? undefined : null"
       :name="formField.fullName"
-      v-decorator="[`${formField.fullName}`, {rules: [{ required: formField.constraints.required, message: '请选择' + formField.title }]}]"
+      v-decorator="[`${formField.fullName}`, {rules: [{ required: formField.constraint.required, message: '请选择' + formField.title }], initialValue: formField.value}]"
     >
       <a-spin v-if="fetching" slot="notFoundContent" size="small" />
       <a-select-option v-for="d in data" :key="d.value">{{d.label}}</a-select-option>
@@ -36,12 +36,12 @@ export default {
     }
   },
   created () {
-    console.log('subject-select', this.formField, this.fieldSubmitName, this.fieldName)
+    console.log('entityName-select', this.formField, this.fieldSubmitName, this.fieldName)
     this.data = this.formField.options
   },
   methods: {
     async handleSearch (value) {
-      console.log('subject select search: ', value, this.lastFetchId)
+      console.log('entityName select search: ', value, this.lastFetchId)
 
       this.lastFetchId += 1
       const fetchId = this.lastFetchId
@@ -50,19 +50,21 @@ export default {
         this.data = []
         this.fetching = true
 
+        const params = {}
+        Object.assign(params, this.formField.entityConditions || {}, {
+          keywords: value,
+          pageNo: 1,
+          pageSize: 10
+        })
         const res = await axios({
-          url: '/' + this.formField.subject + '/select',
+          url: '/' + this.formField.entityName + '/select/options',
           method: 'get',
-          params: {
-            keywords: value,
-            pageNo: 1,
-            pageSize: 10
-          }
+          params
         })
 
         if (res.success) {
           data = res.result
-          console.log('subject select: ', data)
+          console.log('entityName select: ', data)
         }
       }
 
@@ -75,7 +77,7 @@ export default {
       this.fetching = false
       this.data = this.data.filter(e => e.value === value)
       this.setFormData(this.fieldName, value)
-      console.log('subject select change: ', value, this.data)
+      console.log('entityName select change: ', value, this.data)
     }
   }
 }

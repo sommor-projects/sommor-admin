@@ -41,9 +41,9 @@ export default {
     }
   },
   created () {
-    console.log('fileUploader name: ', this.name)
     this.fileMaxCount = this.getFormField(this.name).maxCount
     const value = this.getFormData(this.name)
+    console.log('fileUploader name: ', this.name, value)
     if (value) {
       for (const file of value) {
         this.addUploadedFile(file)
@@ -56,7 +56,7 @@ export default {
         mediaFileId: item.id,
         mediaSubjectRelationId: item.mediaSubjectRelationId,
         uid: item.uri,
-        name: item.title,
+        name: item.title || (this.name + '-' + item.id),
         status: 'done',
         url: item.url
       })

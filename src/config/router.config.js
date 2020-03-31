@@ -37,7 +37,8 @@ export const asyncRouterMap = [
                 name: 'taxonomy-wine-region-list',
                 component: () => import('@/pages/taxonomy/List'),
                 props: {
-                  type: 'wine-region'
+                  taxonomy: 'wine-region',
+                  specifySubjectTaxonomy: false
                 },
                 meta: { title: '列表' }
               },
@@ -45,7 +46,8 @@ export const asyncRouterMap = [
                 path: '/taxonomy/wine-region/save',
                 name: 'taxonomy-wine-region-save',
                 props: {
-                  type: 'wine-region'
+                  taxonomy: 'wine-region',
+                  specifySubjectTaxonomy: false
                 },
                 component: () => import('@/pages/taxonomy/Form'),
                 meta: { title: '保存' }
@@ -53,54 +55,59 @@ export const asyncRouterMap = [
             ]
           },
           {
-            path: '/shop/wine-producer',
-            name: 'shop-wine-producer',
+            path: '/shop/winery',
+            name: 'shop-winery',
             component: RouteView,
             meta: { title: '酒庄', icon: 'layout' },
             hideChildrenInMenu: true,
-            redirect: '/shop/wine-producer/list',
+            redirect: '/shop/winery/list',
             children: [
               {
-                path: '/shop/wine-producer/list',
-                name: 'shop-wine-producer-list',
+                path: '/shop/winery/list',
+                name: 'shop-winery-list',
                 component: () => import('@/pages/mall/shop/List'),
                 props: {
-                  type: 'wine-producer',
-                  spuType: 'wine-product'
+                  taxonomy: 'winery',
+                  productTaxonomy: 'wines',
+                  showSubjectTaxonomySearchField: false,
+                  specifySubjectTaxonomy: false
                 },
                 meta: { title: '列表', hideInBreadcrumb: true }
               },
               {
-                path: '/shop/wine-producer/save',
-                name: 'shop-wine-producer-save',
+                path: '/shop/winery/save',
+                name: 'shop-winery-save',
                 component: () => import('@/pages/mall/shop/Form'),
                 props: {
-                  type: 'wine-producer'
+                  taxonomy: 'winery',
+                  specifySubjectTaxonomy: false
                 },
                 meta: { title: '保存', hideInBreadcrumb: true }
               },
               {
-                path: '/spu/wine-product',
-                name: 'spu-wine-product',
+                path: '/product/wines',
+                name: 'product-wines',
                 component: RouteView,
                 meta: { title: '酒款', hideInBreadcrumb: true },
-                redirect: '/spu/wine-product/list',
+                redirect: '/product/wines/list',
                 children: [
                   {
-                    path: '/spu/wine-product/list',
-                    name: 'spu-wine-product-list',
-                    component: () => import('@/pages/mall/product/spu/List'),
+                    path: '/product/wines/list',
+                    name: 'product-wines-list',
+                    component: () => import('@/pages/mall/product/List'),
                     props: {
-                      type: 'wine-product'
+                      taxonomy: 'wines',
+                      specifySubjectTaxonomy: false
                     },
                     meta: { title: '酒款列表', queryParamNames: ['shopId'] }
                   },
                   {
-                    path: '/spu/wine-product/save',
-                    name: 'spu-wine-product-save',
-                    component: () => import('@/pages/mall/product/spu/Form'),
+                    path: '/product/wines/save',
+                    name: 'product-wines-save',
+                    component: () => import('@/pages/mall/product/Form'),
                     props: {
-                      type: 'wine-product'
+                      taxonomy: 'wines',
+                      specifySubjectTaxonomy: false
                     },
                     meta: { title: '保存酒款', queryParamNames: ['shopId'] }
                   }
@@ -121,7 +128,7 @@ export const asyncRouterMap = [
                 name: 'post-wine-news-list',
                 component: () => import('@/pages/post/List'),
                 props: {
-                  type: 'wine-news'
+                  taxonomy: 'wine-news'
                 },
                 meta: { title: '资讯列表', hideInBreadcrumb: true }
               },
@@ -130,9 +137,93 @@ export const asyncRouterMap = [
                 name: 'post-wine-news-save',
                 component: () => import('@/pages/post/Form'),
                 props: {
-                  type: 'wine-news'
+                  taxonomy: 'wine-news'
                 },
                 meta: { title: '保存资讯', hideInBreadcrumb: true }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        path: '/mall',
+        name: 'mall',
+        meta: { title: '商城', icon: 'slack' },
+        redirect: '/mall/shop',
+        component: RouteView,
+        children: [
+          {
+            path: '/mall/shop',
+            name: 'mall-shop',
+            component: PageView,
+            meta: { title: '店铺', icon: 'layout' },
+            redirect: '/mall/shop/list',
+            hideChildrenInMenu: true,
+            children: [
+              {
+                path: '/mall/shop/list',
+                name: 'shop-list',
+                component: () => import('@/pages/mall/shop/List'),
+                props: {
+                  taxonomy: 'shop',
+                  productTaxonomy: 'product'
+                },
+                meta: { title: '店铺列表', hideInBreadcrumb: true }
+              },
+              {
+                path: '/mall/shop/save',
+                name: 'shop-save',
+                component: () => import('@/pages/mall/shop/Form'),
+                props: {
+                  taxonomy: 'shop'
+                },
+                meta: { title: '保存店铺', hideInBreadcrumb: true }
+              }
+            ]
+          },
+          {
+            path: '/mall/product',
+            name: 'mall-product',
+            component: PageView,
+            meta: { title: '商品', icon: 'layout' },
+            redirect: '/mall/product/list',
+            hideChildrenInMenu: true,
+            children: [
+              {
+                path: '/mall/product/list',
+                name: 'product-list',
+                component: () => import('@/pages/mall/product/List'),
+                props: {
+                  taxonomy: 'product'
+                },
+                meta: { title: '商品列表', hideInBreadcrumb: true }
+              },
+              {
+                path: '/mall/product/save',
+                name: 'product-save',
+                component: () => import('@/pages/mall/product/Form'),
+                props: {
+                  taxonomy: 'product'
+                },
+                meta: { title: '商品保存', hideInBreadcrumb: true }
+              },
+              {
+                path: '/mall/sku/list',
+                name: 'sku-list',
+                component: () => import('@/pages/mall/sku/List'),
+                props: {
+                  taxonomy: 'product'
+                },
+                meta: { title: '商品SKU列表', hideInBreadcrumb: true }
+              },
+              {
+                path: '/mall/sku/save',
+                name: 'sku-save',
+                component: () => import('@/pages/mall/sku/Form'),
+                props: {
+                  taxonomy: 'product'
+                },
+                meta: { title: '商品SKU保存', hideInBreadcrumb: true }
               }
             ]
           }
@@ -186,6 +277,28 @@ export const asyncRouterMap = [
                 name: 'user-save',
                 component: () => import('@/pages/user/Form'),
                 meta: { title: '用户保存', hideInBreadcrumb: true }
+              }
+            ]
+          },
+          {
+            path: '/qrcode',
+            name: 'qrcode',
+            component: PageView,
+            meta: { title: '二维码', icon: 'layout' },
+            redirect: '/qrcode/list',
+            hideChildrenInMenu: true,
+            children: [
+              {
+                path: '/qrcode/list',
+                name: 'qrcode-list',
+                component: () => import('@/pages/qrcode/List'),
+                meta: { title: '二维码列表', hideInBreadcrumb: true }
+              },
+              {
+                path: '/qrcode/save',
+                name: 'qrcode-save',
+                component: () => import('@/pages/qrcode/Form'),
+                meta: { title: '二维码保存', hideInBreadcrumb: true }
               }
             ]
           }

@@ -10,11 +10,12 @@
     </template>
     <template v-else>
       <a-form @submit="handleSubmit" :form="form" v-if="formInitialized">
+        <subject-select :field="formFields.shopId"></subject-select>
         <s-field :field="formFields.title"></s-field>
         <s-field :field="formFields.subTitle"></s-field>
         <s-fieldset :fields="formFields.taxonomy"></s-fieldset>
-        <subject-select :field="formFields.userId"></subject-select>
-        <s-field :field="formFields.logo"></s-field>
+        <s-field :field="formFields.pictures"></s-field>
+        <s-field :field="formFields.description"></s-field>
         <div>
           <a-button htmlType="submit" type="primary">保存</a-button>
           <a-button style="margin-left: 8px" @click="handleSubmitAndContinue">保存并继续{{formActionTitle}}</a-button>
@@ -22,7 +23,7 @@
       </a-form>
     </template>
   </a-card>
-</template>
+</template>s
 
 <script>
 import { PageView } from '@/layouts'
@@ -31,14 +32,22 @@ import { SField, SFieldset } from '@/components/Field'
 import taxonomy from '@/pages/taxonomy/taxonomy'
 
 export default {
-  name: 'ShopForm',
+  name: 'SpuForm',
   components: { PageView, SField, SFieldset },
   mixins: [form, taxonomy],
+  data () {
+    return {
+      specifySubjectTaxonomy: true
+    }
+  },
   created () {
+    if (this.$route.query) {
+      this.formRenderParam.shopId = this.$route.query.shopId
+    }
   },
   computed: {
     subject () {
-      return 'shop'
+      return 'spu'
     }
   },
   methods: {
@@ -46,14 +55,19 @@ export default {
       const title = res.result.title
       return `${title} 保存成功`
     },
-    formSubmitRedirectRoute () {
-      if (this.taxonomy && this.subject !== this.taxonomy) {
+    formSubmitRedirectRoute (res) {
+      const query = {
+        shopId: res.result.shopId
+      }
+      if (this.taxonomy) {
         return {
-          name: this.subject + '-' + this.taxonomy + '-list'
+          name: this.subject + '-' + this.taxonomy + '-list',
+          query
         }
       }
       return {
-        name: this.subject + '-list'
+        name: this.subject + '-list',
+        query
       }
     }
   }

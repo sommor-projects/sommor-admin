@@ -19,7 +19,8 @@ export default {
       formData: {},
       formAction: undefined,
       formActionTitle: '',
-      formInitialized: false
+      formInitialized: false,
+      formRenderPath: undefined
     }
   },
   computed: {
@@ -31,6 +32,7 @@ export default {
     if (this.$route.query) {
       this.formRenderParam.id = this.$route.query.id || 0
     }
+    this.formRenderPath = '/' + this.subject + '/form'
   },
   async mounted () {
     this.$loading.show()
@@ -76,7 +78,7 @@ export default {
     formRender () {
       console.log('formRenderParam： ', this.formRenderParam)
       return axios({
-        url: '/' + this.subject + '/form',
+        url: this.formRenderPath,
         params: this.formRenderParam,
         method: 'get'
       })
@@ -91,7 +93,8 @@ export default {
     },
     setFormFieldsValue (data) {
       setTimeout(() => {
-        console.log('this.form.getFieldsValue:', this.form.getFieldsValue(), data)
+        console.log('this.form.getFieldsValue:', this.form.getFieldsValue())
+        console.log('this.form.data:', data)
         const formData = this.getFormFieldData(this.form.getFieldsValue(), data)
         console.log('formData:', formData)
         const formattedFormData = this.formatFormData(formData)

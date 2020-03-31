@@ -1,13 +1,13 @@
 <template>
   <a-card :body-style="{padding: '24px 32px'}" :bordered="false">
     <a-form @submit="handleSubmit" :form="form" v-if="formInitialized">
-      <s-field name="userName"></s-field>
-      <s-field v-if="formAction === 'add'" name="password"></s-field>
-      <s-field name="nickName"></s-field>
-      <s-field name="mobilePhone"></s-field>
-      <s-field name="email"></s-field>
-      <s-field name="gender"></s-field>
-      <s-field name="avatar"></s-field>
+      <s-field :field="formFields.userName"></s-field>
+      <s-field v-if="formAction === 'add'" :field="formFields.password" name="password"></s-field>
+      <s-field :field="formFields.nickName"></s-field>
+      <s-field :field="formFields.mobilePhone"></s-field>
+      <s-field :field="formFields.email"></s-field>
+      <s-field :field="formFields.gender"></s-field>
+      <s-field :field="formFields.avatar"></s-field>
       <div>
         <a-button htmlType="submit" type="primary">保存</a-button>
         <a-button style="margin-left: 8px" @click="handleSubmitAndContinue">保存并继续{{formActionTitle}}</a-button>

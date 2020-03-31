@@ -50,7 +50,7 @@ import { STable } from '@/components'
 import { forwardTaxonomy, backwardTaxonomy } from './api'
 import { PageView } from '@/layouts'
 import table from '@/mixins/table'
-import type from '@/pages/taxonomy/type'
+import taxonomy from '@/pages/taxonomy/taxonomy'
 
 export default {
   name: 'TaxonomyList',
@@ -59,12 +59,12 @@ export default {
     STable
   },
   props: {
-    type: {
+    taxonomy: {
       type: String,
       required: false
     }
   },
-  mixins: [table, type],
+  mixins: [table, taxonomy],
   data () {
     return {
       columns: [
@@ -88,24 +88,25 @@ export default {
   computed: {
     subject () {
       return 'taxonomy'
-    },
-    queryParams () {
-      return {
-        parentId: this.$route.query && this.$route.query.parentId || null,
-        type: this.type || null
-      }
     }
   },
   created () {
-    if (this.$route.query) {
-      const parentId = this.$route.query && this.$route.query.parentId
+    const parentId = this.$route.query && this.$route.query.parentId
+    if (parentId) {
       this.pageRenderParams.id = parentId
+      this.queryParams.parentId = parentId
+    } else {
+      if (this.taxonomy) {
+        this.queryParams.taxonomy = this.taxonomy
+      } else {
+        this.queryParams.parentId = 0
+      }
     }
   },
   methods: {
     resolveActionRouteName (action) {
-      if (this.type) {
-        return 'taxonomy-' + this.type + '-' + action
+      if (this.taxonomy) {
+        return 'taxonomy-' + this.taxonomy + '-' + action
       }
       return 'taxonomy-' + action
     },
@@ -126,7 +127,7 @@ export default {
     handleAddAction () {
       this.$router.push({
         name: this.resolveActionRouteName('save'),
-        query: { parentId: this.taxonomy.id || 0 }
+        query: { parentId: this.taxonomyDetail.id || 0 }
       })
     },
     handleForwardAction (record) {

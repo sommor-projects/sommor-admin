@@ -17,38 +17,32 @@
       :columns="columns"
       :rowSelection="rowSelection"
     >
-      <span slot="qrcode" slot-scope="text, record">
-        <template>
-          <a @click="handleGenerateQrCodeAction(record)" v-if="record.qrCode === null">生成</a>
-          <a @click="handleShowQrCodeImageAction(record)" v-if="record.qrCode !== null">查看</a>
-        </template>
+      <span slot="title_slot" slot-scope="text, record">
+          {{ record.title }} / {{ record.subTitle }}
       </span>
-      <span slot="action" slot-scope="text, record">
-        <template>
-          <a @click="handleEditAction(record)">编辑</a>
-          <a-divider type="vertical" />
-          <a @click="handleDeleteAction(record)">删除</a>
-        </template>
-      </span>
+        <span slot="action" slot-scope="text, record">
+          <template>
+            <a @click="handleEditAction(record)">编辑</a>
+            <a-divider type="vertical" />
+            <a @click="handleDeleteAction(record)">删除</a>
+          </template>
+        </span>
     </s-table>
-    <qr-code-image-modal ref="qrCodeImage" />
   </a-card>
 </template>
 
 <script>
 import { STable } from '@/components'
 import { PageView } from '@/layouts'
-import QrCodeImageModal from '@/pages/qrcode/QrCodeImageModal'
 import table from '@/mixins/table'
 import taxonomy from '@/pages/taxonomy/taxonomy'
 import { axios } from '@/utils/request'
 
 export default {
-  name: 'PostTable',
+  name: 'SpuTable',
   components: {
     PageView,
-    STable,
-    QrCodeImageModal
+    STable
   },
   mixins: [table, taxonomy],
   data () {
@@ -60,12 +54,7 @@ export default {
         },
         {
           title: '名称',
-          dataIndex: 'title'
-        },
-        {
-          title: '二维码',
-          dataIndex: 'qrcode',
-          scopedSlots: { customRender: 'qrcode' }
+          scopedSlots: { customRender: 'title_slot' }
         },
         {
           title: '操作',
@@ -75,26 +64,31 @@ export default {
       ]
     }
   },
+  inject: ['addPageRenderListener', 'renderPageView', 'setPageSubjectTitle', 'addPageBreadcrumb'],
   computed: {
     subject () {
-      return 'post'
+      return 'spu'
     }
   },
-  async created () {
+  created () {
+    const shopId = (this.$route.query && this.$route.query.shopId) || null
+    if (shopId) {
+      this.queryParams.shopId = shopId
+    }
   },
-  methods: {
-    handleGenerateQrCodeAction (record) {
-      axios.post('/qrcode/add', {
-        subject: 'post',
-        subjectId: record.id
-      }).then(res => {
-        if (res.success) {
-          console.log(res)
+  async mounted () {
+    if (this.queryParams.shopId) {
+      const res = await axios({
+        url: '/shop/detail',
+        method: 'get',
+        params: {
+          id: this.queryParams.shopId
         }
       })
-    },
-    handleShowQrCodeImageAction (recode) {
-      this.$refs.qrCodeImage.show(recode.qrCode)
+      if (res.success) {
+        this.setPageSubjectTitle(res.result.title)
+        console.log('spu created', res.result.title)
+      }
     }
   }
 }
