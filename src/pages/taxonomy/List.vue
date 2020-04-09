@@ -91,15 +91,13 @@ export default {
     }
   },
   created () {
-    const parentId = this.$route.query && this.$route.query.parentId
-    if (parentId) {
-      this.pageRenderParams.id = parentId
-      this.queryParams.parentId = parentId
+    const parent = this.$route.query && this.$route.query.parent
+    if (parent) {
+      this.pageRenderParams.taxonomy = parent
+      this.queryParams.parent = parent
     } else {
       if (this.taxonomy) {
-        this.queryParams.taxonomy = this.taxonomy
-      } else {
-        this.queryParams.parentId = 0
+        this.queryParams.parent = this.taxonomy
       }
     }
   },
@@ -113,7 +111,7 @@ export default {
     handleSubListAction (record) {
       const to = {
         name: this.resolveActionRouteName('list'),
-        query: { parentId: record.id }
+        query: { parent: record.key }
       }
       console.log('handleSubListAction', to)
       this.$router.push(to)
@@ -121,13 +119,13 @@ export default {
     handleAddSubAction (record) {
       this.$router.push({
         name: this.resolveActionRouteName('save'),
-        query: { parentId: record.id }
+        query: { parent: record.key }
       })
     },
     handleAddAction () {
       this.$router.push({
         name: this.resolveActionRouteName('save'),
-        query: { parentId: this.taxonomyDetail.id || 0 }
+        query: { parent: this.taxonomyDetail.key || 0 }
       })
     },
     handleForwardAction (record) {

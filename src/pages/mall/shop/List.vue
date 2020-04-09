@@ -5,12 +5,12 @@
         <a-row :gutter="48">
           <a-col :md="8" :sm="24">
             <a-tree-select
-              :placeholder="'请选择' + searchForm.fields.taxonomyId.title"
+              :placeholder="'请选择' + searchForm.fields.taxonomy.title"
               :dropdownStyle="{ maxHeight: '400px', overflow: 'auto' }"
               :treeDefaultExpandAll="true"
               style="width: 100%"
-              :treeData="searchForm.fields.taxonomyId.options"
-              v-model="queryParams.taxonomyId"
+              :treeData="searchForm.fields.taxonomy.options"
+              v-model="queryParams.taxonomy"
               @change="handleSearchFormSubmit"
             >
             </a-tree-select>
@@ -144,7 +144,7 @@ export default {
         url: '/taxonomy/detail',
         method: 'get',
         params: {
-          taxonomy: this.productTaxonomy
+          taxonomy: this.productTaxonomy === 'product' ? this.productTaxonomy : ('product:' + this.productTaxonomy)
         }
       })
 

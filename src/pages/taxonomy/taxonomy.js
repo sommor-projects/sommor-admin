@@ -35,7 +35,7 @@ export default {
       return false
     },
     subjectTaxonomy () {
-      return (this.$route.query && (this.$route.query.taxonomy || this.$route.query.taxonomyId)) || this.taxonomy
+      return (this.$route.query && this.$route.query.taxonomy) || this.taxonomy
     }
   },
   inject: ['addPageRenderListener', 'renderPageView', 'setPageSubjectTaxonomyTitle', 'addPageBreadcrumb'],
@@ -43,8 +43,8 @@ export default {
     this.addPageRenderListener(this.onPageRender)
     const taxonomy = this.subjectTaxonomy
     if (taxonomy) {
-      this.pageRenderParams.taxonomy = taxonomy
-      this.pageRenderParams.subject = this.subject || null
+      const entity = this.subject
+      this.pageRenderParams.taxonomy = entity && entity !== 'taxonomy' && entity !== taxonomy ? (entity + ':' + taxonomy) : taxonomy
       if (this.formRenderParam) {
         this.formRenderParam.taxonomy = taxonomy
       }
@@ -114,9 +114,9 @@ export default {
           const t = this.taxonomyDetail.path[i]
           const params = {}
           if (subject === 'taxonomy') {
-            params['parentId'] = t.id
+            params['parent'] = t.key
           } else {
-            params['taxonomyId'] = t.id
+            params['taxonomy'] = t.name
           }
           const breadcrumb = {
             name: (subject === taxonomy ? subject : (subject + (taxonomy ? ('-' + taxonomy) : ''))) + '-list',
