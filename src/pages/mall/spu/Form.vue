@@ -37,7 +37,6 @@ export default {
   mixins: [form, taxonomy],
   data () {
     return {
-      specifySubjectTaxonomy: true
     }
   },
   created () {
