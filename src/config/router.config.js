@@ -18,6 +18,83 @@ export const asyncRouterMap = [
         redirect: '/taxonomy/wine-region/list'
       },
       {
+        path: '/outline',
+        name: 'outline',
+        component: PageView,
+        meta: { title: 'Outline', icon: 'slack' },
+        redirect: '/outline/servers/list',
+        children: [
+          {
+            path: '/outline/server',
+            name: 'outlines-server',
+            component: RouteView,
+            meta: { title: '服务器', icon: 'layout' },
+            hideChildrenInMenu: true,
+            redirect: '/outline/server/list',
+            children: [
+              {
+                path: '/outline/server/list',
+                name: 'outline-server-list',
+                component: () => import('@/pages/outline/server/List'),
+                meta: { title: '列表', hideInBreadcrumb: true }
+              },
+              {
+                path: '/outline/server/save',
+                name: 'outline-server-save',
+                props: {
+                  taxonomy: 'outline-server',
+                  specifySubjectTaxonomy: false
+                },
+                component: () => import('@/pages/outline/server/Form'),
+                meta: { title: '保存', hideInBreadcrumb: true }
+              },
+              {
+                path: '/outline/accesskey',
+                name: 'outline-accesskey-list',
+                component: () => import('@/pages/outline/accesskey/List'),
+                meta: { title: 'accessKey列表' }
+              },
+              {
+                path: '/outline/accesskey/save',
+                name: 'outline-accesskey-save',
+                component: () => import('@/pages/outline/accesskey/Form'),
+                meta: { title: '保存', hideInBreadcrumb: true }
+              }
+            ]
+          },
+          {
+            path: '/outline/product',
+            name: 'outlines-product',
+            component: RouteView,
+            meta: { title: '商品', icon: 'layout', hideInBreadcrumb: true },
+            hideChildrenInMenu: true,
+            redirect: '/outline/product/list',
+            children: [
+              {
+                path: '/outline/product/list',
+                name: 'product-outline-list',
+                component: () => import('@/pages/mall/product/ProductSkuList'),
+                props: {
+                  taxonomy: 'product:outline',
+                  specifySubjectTaxonomy: false
+                },
+                meta: { title: '列表' }
+              },
+              {
+                path: '/outline/product/save',
+                name: 'product-outline-save',
+                component: () => import('@/pages/mall/product/ProductSkuForm'),
+                props: {
+                  taxonomy: 'product:outline',
+                  specifySubjectTaxonomy: false
+                },
+                meta: { title: '保存', hideInBreadcrumb: true }
+              }
+            ]
+          }
+        ]
+      },
+      {
         path: '/wines',
         name: 'wines',
         component: PageView,
@@ -224,6 +301,31 @@ export const asyncRouterMap = [
                   taxonomy: 'product'
                 },
                 meta: { title: '商品SKU保存', hideInBreadcrumb: true }
+              }
+            ]
+          },
+          {
+            path: '/mall/order',
+            name: 'mall-order',
+            component: PageView,
+            meta: { title: '订单', icon: 'layout' },
+            redirect: '/mall/order/list',
+            hideChildrenInMenu: true,
+            children: [
+              {
+                path: '/mall/order/list',
+                name: 'order-list',
+                component: () => import('@/pages/mall/shop/List'),
+                props: {
+                  taxonomy: 'shop'
+                },
+                meta: { title: '订单列表', hideInBreadcrumb: true }
+              },
+              {
+                path: '/mall/order/create',
+                name: 'order-create',
+                component: () => import('@/pages/mall/order/Form'),
+                meta: { title: '创建订单', hideInBreadcrumb: true }
               }
             ]
           }

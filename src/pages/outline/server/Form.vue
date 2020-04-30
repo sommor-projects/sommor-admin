@@ -1,0 +1,60 @@
+<template>
+  <a-card :bordered="false">
+    <a-form @submit="handleSubmit" :form="form" v-if="formInitialized">
+      <s-field :field="formFields.name"></s-field>
+      <s-field :field="formFields.apiUrl"></s-field>
+      <s-fieldset :fields="formFields.taxonomy"></s-fieldset>
+      <s-field :field="formFields.startEndTime"></s-field>
+      <subject-select :field="formFields.agencyUserId"></subject-select>
+      <div>
+        <a-button htmlType="submit" type="primary">保存</a-button>
+        <a-button style="margin-left: 8px" @click="handleSubmitAndContinue">保存并继续{{formActionTitle}}</a-button>
+      </div>
+    </a-form>
+  </a-card>
+</template>s
+
+<script>
+import { PageView } from '@/layouts'
+import form from '@/mixins/form'
+import { SField, SFieldset } from '@/components/Field'
+import taxonomy from '@/pages/taxonomy/taxonomy'
+
+export default {
+  name: 'OutlineServerForm',
+  components: { PageView, SField, SFieldset },
+  mixins: [form, taxonomy],
+  data () {
+    return {
+    }
+  },
+  created () {
+  },
+  computed: {
+    subject () {
+      return 'outline-server'
+    }
+  },
+  methods: {
+    formSavedSuccessDescription (res) {
+      const title = res.result.title
+      return `${title} 保存成功`
+    },
+    formSubmitRedirectRoute (res) {
+      const query = {
+        shopId: res.result.shopId
+      }
+      if (this.taxonomy && this.subject !== this.taxonomy) {
+        return {
+          name: this.subject + '-' + this.taxonomy + '-list',
+          query
+        }
+      }
+      return {
+        name: this.subject + '-list',
+        query
+      }
+    }
+  }
+}
+</script>

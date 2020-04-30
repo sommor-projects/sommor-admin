@@ -123,9 +123,13 @@ export default {
       })
     },
     handleAddAction () {
+      const query = {}
+      if (this.taxonomyDetail.key) {
+        query['parent'] = this.taxonomyDetail.key
+      }
       this.$router.push({
         name: this.resolveActionRouteName('save'),
-        query: { parent: this.taxonomyDetail.key || 0 }
+        query
       })
     },
     handleForwardAction (record) {

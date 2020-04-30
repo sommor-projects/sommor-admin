@@ -35,16 +35,17 @@ export default {
       return false
     },
     subjectTaxonomy () {
-      return (this.$route.query && this.$route.query.taxonomy) || this.taxonomy
+      return (this.$route.query && this.$route.query.taxonomy) || this.taxonomy || (this.subject !== 'taxonomy' && this.subject)
     }
   },
   inject: ['addPageRenderListener', 'renderPageView', 'setPageSubjectTaxonomyTitle', 'addPageBreadcrumb'],
   created () {
     this.addPageRenderListener(this.onPageRender)
     const taxonomy = this.subjectTaxonomy
+    console.log('taxonomy', taxonomy)
     if (taxonomy) {
       const entity = this.subject
-      this.pageRenderParams.taxonomy = entity && entity !== 'taxonomy' && entity !== taxonomy ? (entity + ':' + taxonomy) : taxonomy
+      this.pageRenderParams.taxonomy = entity && entity !== 'taxonomy' && (entity !== taxonomy && taxonomy.indexOf(':') < 0) ? (entity + ':' + taxonomy) : taxonomy
       if (this.formRenderParam) {
         this.formRenderParam.taxonomy = taxonomy
       }
@@ -57,10 +58,12 @@ export default {
         }
       }
     }
+    this.routeNamePrefix = this.resolveActionRouteNamePrefix()
+    this.apiBasePath = '/' + this.subject
   },
   beforeMount () {
     if (this.specifySubjectTaxonomy && this.subject !== 'taxonomy') {
-      if (this.formRenderPath && this.taxonomyNotSpecified) {
+      if (this.taxonomyNotSpecified) {
         this.formRenderPath = '/taxonomy/form/subject'
       }
     }
@@ -74,11 +77,17 @@ export default {
     }
   },
   methods: {
-    resolveActionRouteName (action) {
+    resolveActionRouteNamePrefix () {
       if (this.taxonomy && this.taxonomy !== this.subject) {
-        return this.subject + '-' + this.taxonomy + '-' + action
+        const taxonomy = this.taxonomy
+        if (taxonomy.indexOf(':') > 0) {
+          const a = taxonomy.split(':')
+          return a[0] + '-' + a[1]
+        } else {
+          return this.subject + '-' + this.taxonomy
+        }
       }
-      return this.subject + '-' + action
+      return this.subject
     },
     pageRenderApi () {
       const params = this.pageRenderParams
@@ -99,6 +108,7 @@ export default {
       return false
     },
     onPageRender (view) {
+      console.log('onPageRender', view)
       this.typeInfo = view.type
       this.taxonomyDetail = view
       // if (this.queryParams && this.queryParams.taxonomy !== undefined) {
@@ -137,7 +147,7 @@ export default {
         if (!err) {
           const query = Object.assign({}, data, this.$route.query || {})
           const to = {
-            name: this.resolveActionRouteName('save'),
+            name: this.routeNamePrefix + '-save',
             query
           }
           console.log('handleSubjectTaxonomyFormSubmit', to)

@@ -14,6 +14,10 @@ export default {
       default: null,
       required: false
     },
+    value: {
+      default: undefined,
+      required: false
+    },
     name: {
       type: String,
       default: null,
@@ -32,6 +36,9 @@ export default {
     fieldType () {
       return this.formField.tag
     },
+    fieldValue () {
+      return this.value || this.formField.value
+    },
     fieldSubmitName () {
       const name = this.formField.fullName
       console.log('formField', name, this.formField)
@@ -47,6 +54,7 @@ export default {
     }
   },
   created () {
+    console.log('fieldValue', this.fieldValue)
     this.formField = this.field
     console.log('field: ', this.fieldName, this.fieldType, this.fieldSubmitName)
   }

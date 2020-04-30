@@ -13,7 +13,7 @@ export default {
           const params = {}
           Object.assign(params, this.queryParams || {}, parameter)
           console.log('table loadData queryParams: ', params)
-          const url = '/' + this.subject + '/list'
+          const url = this.apiBasePath + '/list'
 
           const options = {
             url,
@@ -32,6 +32,9 @@ export default {
       selectedRows: [],
       queryParams: {},
       addFormQuery: {},
+      formQueryParams: {},
+      routeNamePrefix: '',
+      apiBasePath: '',
       searchForm: null
     }
   },
@@ -40,6 +43,7 @@ export default {
       this.queryParams = Object.assign(this.queryParams, this.$route.query)
       console.log('table queryParams', this.queryParams)
     }
+    this.apiBasePath = '/' + this.subject
   },
   computed: {
     subject () {
@@ -56,7 +60,7 @@ export default {
   },
   methods: {
     resolveActionRouteName (action) {
-      return this.subject + '-' + action
+      return (this.routeNamePrefix || this.subject) + '-' + action
     },
     refreshTable () {
       this.$refs.table.refresh()
@@ -76,6 +80,7 @@ export default {
       } else {
         Object.assign(query, this.addFormQuery)
       }
+      Object.assign(query, this.formQueryParams)
       const meta = this.$store.getters.routeMetas[routeName]
       if (meta && meta.queryParamNames) {
         const routeQuery = this.$route.query
@@ -98,7 +103,7 @@ export default {
         content: '真的要删除吗?',
         onOk: () => {
           this.$loading.show()
-          axios.post('/' + this.subject + '/delete', { id: record.id }).then(res => {
+          axios.post(this.apiBasePath + '/delete', { id: record.id }).then(res => {
             this.$loading.hide()
             if (res.success) {
               this.$notification.success({
@@ -119,7 +124,7 @@ export default {
         content: '真的要删除吗?',
         onOk: () => {
           this.$loading.show()
-          axios.post('/' + this.subject + '/delete-batch', { ids: this.selectedRowKeys }).then(res => {
+          axios.post(this.apiBasePath + '/delete-batch', { ids: this.selectedRowKeys }).then(res => {
             this.$loading.hide()
             if (res.success) {
               this.$notification.success({

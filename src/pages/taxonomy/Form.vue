@@ -22,20 +22,20 @@
         :sm="24"
         :xs="24">
         <a-row
-          v-for="(config, index) in formData.attributeSettings"
+          v-for="(attributeSettings, index) in formData.attributeSettings"
           :key="'attributeSettings-' + index">
           <a-card :body-style="{ margin: '0px 0px 12px 0px'}" :bordered="false" title="关联的分类信息">
             <span slot="extra">
               <a @click="handleDeleteAttributeSettings(index)">删除</a>
             </span>
-            <s-field :name="'attributeSettings.'+ index + '.subject'" :field="formFields.attributeSettings.subject"></s-field>
-            <s-field :name="'attributeSettings.'+ index + '.type'" :field="formFields.attributeSettings.type"></s-field>
+            <s-field :name="'attributeSettings.'+ index + '.subject'" :field="formFields.attributeSettings.subject" :value="attributeSettings.subject"></s-field>
+            <s-field :name="'attributeSettings.'+ index + '.type'" :field="formFields.attributeSettings.type" :value="attributeSettings.type"></s-field>
             <a-row type="flex">
               <a-col :span="4">
-                <s-field :name="'attributeSettings.'+ index + '.required'" :field="formFields.attributeSettings.required"></s-field>
+                <s-field :name="'attributeSettings.'+ index + '.required'" :field="formFields.attributeSettings.required" :value="attributeSettings.required"></s-field>
               </a-col>
               <a-col :span="4">
-                <s-field :name="'attributeSettings.'+ index + '.multiple'" :field="formFields.attributeSettings.multiple"></s-field>
+                <s-field :name="'attributeSettings.'+ index + '.multiple'" :field="formFields.attributeSettings.multiple" :value="attributeSettings.multiple"></s-field>
               </a-col>
             </a-row>
           </a-card>
@@ -68,10 +68,7 @@ export default {
   data () {
     return {
       taxonomyOptions: [],
-      formRenderParam: {
-        id: 0,
-        parent: null
-      },
+      formRenderParam: {},
       formData: {
         attributeSettings: []
       }
@@ -80,7 +77,7 @@ export default {
   created () {
     if (this.$route.query) {
       this.formRenderParam.parent = this.$route.query.parent || null
-      if (this.$route.query.id && this.$route.query.id > 0) {
+      if (this.$route.query.id) {
         this.pageRenderParams.id = this.$route.query.id
       } else if (this.$route.query.parent) {
         this.pageRenderParams.taxonomy = this.$route.query.parent

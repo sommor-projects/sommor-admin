@@ -1,4 +1,5 @@
 import { axios } from '@/utils/request'
+import moment from 'moment'
 
 export default {
   inject: ['reload', 'setPageSubjectAction'],
@@ -6,21 +7,23 @@ export default {
     return {
       getFormData: this.getFormData,
       getFormField: this.getFormField,
-      setFormData: this.setFormData
+      setFormData: this.setFormData,
+      addFormSubmitDataFormatters: this.addFormSubmitDataFormatters
     }
   },
   data () {
     return {
-      formRenderParam: {
-        id: 0
-      },
+      formRenderParam: {},
       form: this.$form.createForm(this),
       formFields: {},
       formData: {},
       formAction: undefined,
       formActionTitle: '',
       formInitialized: false,
-      formRenderPath: undefined
+      formRenderPath: '',
+      formSubmitDataFormatters: [],
+      routeNamePrefix: '',
+      apiBasePath: ''
     }
   },
   computed: {
@@ -29,16 +32,19 @@ export default {
     }
   },
   created () {
-    if (this.$route.query) {
-      this.formRenderParam.id = this.$route.query.id || 0
+    if (this.$route.query && this.$route.query.id) {
+      this.formRenderParam.id = this.$route.query.id
     }
-    this.formRenderPath = '/' + this.subject + '/form'
+    this.apiBasePath = '/' + this.subject
+    this.addFormSubmitDataFormatters(this.formatSubmitData)
   },
   async mounted () {
     this.$loading.show()
+    if (this.formRenderPath === '') {
+      this.formRenderPath = this.apiBasePath + '/form'
+    }
     const res = await this.formRender()
     this.initForm(res)
-    this.formInitialized = true
     this.$loading.hide()
   },
   methods: {
@@ -52,7 +58,8 @@ export default {
         this.formActionTitle = form.actionTitle
         this.setPageSubjectAction(this.formActionTitle)
         this.onFormRender(form)
-        this.setFormFieldsValue(this.formData)
+        // this.setFormFieldsValue(this.formData)
+        this.formInitialized = true
       }
     },
     getFormData (name) {
@@ -84,7 +91,8 @@ export default {
       })
     },
     formSave (formData) {
-      return axios.post('/' + this.subject + '/' + this.formAction, formData)
+      const url = this.apiBasePath + '/' + this.formAction
+      return axios.post(url, formData)
     },
     setFormData (k, v) {
       const data = {}
@@ -101,6 +109,9 @@ export default {
         console.log('setFieldValue', formattedFormData)
         this.form.setFieldsValue(formattedFormData)
       }, 0)
+    },
+    addFormSubmitDataFormatters (formatter) {
+      this.formSubmitDataFormatters.push(formatter)
     },
     formatFormData (data) {
       const formattedData = {}
@@ -132,9 +143,11 @@ export default {
       this.form.validateFields((err, data) => {
         console.log('Received data of form: ', data)
         if (!err) {
-          this.mergeFormSubmitData(this.formData, data)
-          console.log('submitFormData: ', this.formData)
-          this.formSave(this.formData).then(res => {
+          const submitData = {}
+          Object.assign(submitData, this.formData)
+          this.mergeFormSubmitData(submitData, data)
+          console.log('submitFormData: ', submitData)
+          this.formSave(submitData).then(res => {
             console.log('submitForm response: ', res)
             if (res.success) {
               this.onFormSavedSuccess(res)
@@ -168,7 +181,11 @@ export default {
         if (v1 instanceof Object && v2 instanceof Object) {
           this.mergeFormSubmitData(v1, v2)
         } else {
-          target[k] = source[k]
+          var v = source[k]
+          this.formSubmitDataFormatters.forEach(callback => {
+            v = callback(v)
+          })
+          target[k] = v
         }
       }
     },
@@ -184,7 +201,7 @@ export default {
     },
     formSubmitRedirectRoute (res) {
       return {
-        name: this.subject + '-list'
+        name: this.routeNamePrefix + '-list'
       }
     },
     handleSubmit (e) {
@@ -193,6 +210,13 @@ export default {
     },
     handleSubmitAndContinue (e) {
       this.submitForm(true)
+    },
+    formatSubmitData (value) {
+      if (value instanceof moment) {
+        return value.format('YYYY-MM-DD HH:mm:ss')
+      }
+
+      return value
     }
   }
 }
