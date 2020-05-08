@@ -59,13 +59,6 @@ export default {
       ]
     }
   },
-  computed: {
-    subject () {
-      return 'qrcode'
-    }
-  },
-  async created () {
-  },
   methods: {
   }
 }

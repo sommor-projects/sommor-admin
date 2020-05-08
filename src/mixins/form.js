@@ -2,6 +2,12 @@ import { axios } from '@/utils/request'
 import moment from 'moment'
 
 export default {
+  props: {
+    apiBasePath: {
+      type: String,
+      required: false
+    }
+  },
   inject: ['reload', 'setPageSubjectAction'],
   provide () {
     return {
@@ -21,21 +27,13 @@ export default {
       formActionTitle: '',
       formInitialized: false,
       formRenderPath: '',
-      formSubmitDataFormatters: [],
-      routeNamePrefix: '',
-      apiBasePath: ''
-    }
-  },
-  computed: {
-    subject () {
-      throw new Error('subject should be specified')
+      formSubmitDataFormatters: []
     }
   },
   created () {
     if (this.$route.query && this.$route.query.id) {
       this.formRenderParam.id = this.$route.query.id
     }
-    this.apiBasePath = '/' + this.subject
     this.addFormSubmitDataFormatters(this.formatSubmitData)
   },
   async mounted () {
@@ -201,8 +199,12 @@ export default {
     },
     formSubmitRedirectRoute (res) {
       return {
-        name: this.routeNamePrefix + '-list'
+        name: this.getRouteNamePrefix() + '-list',
+        query: this.formSubmitRedirectRouteQuery()
       }
+    },
+    formSubmitRedirectRouteQuery (res) {
+      return {}
     },
     handleSubmit (e) {
       e.preventDefault()

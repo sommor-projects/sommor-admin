@@ -28,13 +28,6 @@ export default {
     return {
     }
   },
-  created () {
-  },
-  computed: {
-    subject () {
-      return 'qrcode'
-    }
-  },
   methods: {
     formSavedSuccessDescription (res) {
       const title = res.result.code

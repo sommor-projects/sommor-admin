@@ -36,24 +36,10 @@ export default {
       }
     }
   },
-  computed: {
-    subject () {
-      return 'order'
-    }
-  },
   methods: {
     formSavedSuccessDescription (res) {
       const title = res.result.title
       return `${title} 保存成功`
-    },
-    formSubmitRedirectRoute (res) {
-      const query = {
-        shopId: res.result.shopId
-      }
-      return {
-        name: this.subject + '-list',
-        query
-      }
     }
   }
 }

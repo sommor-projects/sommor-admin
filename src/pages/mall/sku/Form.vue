@@ -50,11 +50,6 @@ export default {
       }
     }
   },
-  computed: {
-    subject () {
-      return 'sku'
-    }
-  },
   methods: {
     onFormRender (form) {
     },
@@ -62,13 +57,9 @@ export default {
       const title = res.result.title
       return `${title} 保存成功`
     },
-    formSubmitRedirectRoute (res) {
-      const query = {
-        shopId: res.result.shopId
-      }
+    formSubmitRedirectRouteQuery (res) {
       return {
-        name: this.subject + '-list',
-        query
+        shopId: res.result.shopId
       }
     }
   }

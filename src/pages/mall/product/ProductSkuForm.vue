@@ -44,11 +44,6 @@ export default {
       this.apiBasePath = '/product-sku'
     }
   },
-  computed: {
-    subject () {
-      return 'sku'
-    }
-  },
   methods: {
     onFormRender (form) {
     },
@@ -61,7 +56,7 @@ export default {
         shopId: res.result.shopId
       }
       return {
-        name: this.routeNamePrefix + '-list',
+        name: this.getRouteNamePrefix() + '-list',
         query
       }
     }

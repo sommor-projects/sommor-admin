@@ -17,18 +17,23 @@
       :columns="columns"
       :rowSelection="rowSelection"
     >
-      <span slot="title_slot" slot-scope="text, record">
-          {{ record.name }}
+      <span slot="product_slot" slot-scope="text, record">
+          {{ record.productTitle }}
       </span>
-      <span slot="accesskey_slot" slot-scope="text, record">
-          <a @click="handleAccesskeyListAction(record)">{{record.accessKeyCount}}</a>
-          <a-divider type="vertical" />
-          <a @click="handleAddAccesskeyAction(record)">添加</a>
+      <span slot="buyer_slot" slot-scope="text, record">
+          {{ record.buyer.nickName }} ( {{ record.buyer.userId }} )
+      </span>
+      <span slot="shop_slot" slot-scope="text, record">
+         {{ record.shop.title }} ( {{ record.shop.id }} )
+      </span>
+      <span slot="sku_slot" slot-scope="text, record">
+          {{ record.amount }}
+      </span>
+      <span slot="status_slot" slot-scope="text, record">
+          {{ record.payStatus.title }}{{ record.orderStatus.title }}
       </span>
         <span slot="action" slot-scope="text, record">
           <template>
-            <a @click="handleSyncAction(record)">同步</a>
-            <a-divider type="vertical" />
             <a @click="handleEditAction(record)">编辑</a>
             <a-divider type="vertical" />
             <a @click="handleDeleteAction(record)">删除</a>
@@ -42,30 +47,40 @@
 import { STable } from '@/components'
 import { PageView } from '@/layouts'
 import table from '@/mixins/table'
-import taxonomy from '@/pages/taxonomy/taxonomy'
-import { axios } from '@/utils/request'
 
 export default {
-  name: 'OutlineServerTable',
+  name: 'OrderTable',
   components: {
     PageView,
     STable
   },
-  mixins: [table, taxonomy],
+  mixins: [table],
   data () {
     return {
       columns: [
         {
-          title: 'ID',
+          title: '订单号',
           dataIndex: 'id'
         },
         {
-          title: '名称',
-          scopedSlots: { customRender: 'title_slot' }
+          title: '商品',
+          scopedSlots: { customRender: 'product_slot' }
         },
         {
-          title: 'AccessKey',
-          scopedSlots: { customRender: 'accesskey_slot' }
+          title: '买家',
+          scopedSlots: { customRender: 'buyer_slot' }
+        },
+        {
+          title: '店铺',
+          scopedSlots: { customRender: 'shop_slot' }
+        },
+        {
+          title: 'SKU',
+          scopedSlots: { customRender: 'sku_slot' }
+        },
+        {
+          title: '状态',
+          scopedSlots: { customRender: 'status_slot' }
         },
         {
           title: '操作',
@@ -76,33 +91,10 @@ export default {
     }
   },
   inject: ['addPageRenderListener', 'renderPageView', 'setPageSubjectTitle', 'addPageBreadcrumb'],
-  methods: {
-    handleAddAccesskeyAction (record) {
-      const routeName = 'outline-accesskey-save'
-      this.$router.push({
-        name: routeName,
-        query: { outlineServerId: record.id }
-      })
-    },
-    handleAccesskeyListAction (record) {
-      const routeName = 'outline-accesskey-list'
-      this.$router.push({
-        name: routeName,
-        query: { outlineServerId: record.id }
-      })
-    },
-    handleSyncAction (record) {
-      axios.post('/outline/server/sync', {
-        serverId: record.id
-      }).then(res => {
-        if (res.success) {
-          this.notify({
-            type: 'success',
-            message: '同步成功',
-            description: `${record.name} 已同步成功`
-          })
-        }
-      })
+  created () {
+    const shopId = (this.$route.query && this.$route.query.shopId) || null
+    if (shopId) {
+      this.queryParams.shopId = shopId
     }
   }
 }

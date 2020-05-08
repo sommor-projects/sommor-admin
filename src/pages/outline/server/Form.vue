@@ -28,31 +28,14 @@ export default {
     return {
     }
   },
-  created () {
-  },
-  computed: {
-    subject () {
-      return 'outline-server'
-    }
-  },
   methods: {
     formSavedSuccessDescription (res) {
       const title = res.result.title
       return `${title} 保存成功`
     },
-    formSubmitRedirectRoute (res) {
-      const query = {
-        shopId: res.result.shopId
-      }
-      if (this.taxonomy && this.subject !== this.taxonomy) {
-        return {
-          name: this.subject + '-' + this.taxonomy + '-list',
-          query
-        }
-      }
+    formSubmitRedirectRouteQuery (res) {
       return {
-        name: this.subject + '-list',
-        query
+        shopId: res.result.shopId
       }
     }
   }

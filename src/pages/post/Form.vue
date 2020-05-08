@@ -32,25 +32,10 @@ export default {
   created () {
     this.formRenderParam.taxonomy = this.taxonomy
   },
-  computed: {
-    subject () {
-      return 'post'
-    }
-  },
   methods: {
     formSavedSuccessDescription (res) {
       const title = res.result.title
       return `${title} 保存成功`
-    },
-    formSubmitRedirectRoute () {
-      if (this.taxonomy) {
-        return {
-          name: this.subject + '-' + this.taxonomy + '-list'
-        }
-      }
-      return {
-        name: this.subject + '-list'
-      }
     }
   }
 }

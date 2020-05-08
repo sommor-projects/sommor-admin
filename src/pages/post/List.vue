@@ -75,13 +75,6 @@ export default {
       ]
     }
   },
-  computed: {
-    subject () {
-      return 'post'
-    }
-  },
-  async created () {
-  },
   methods: {
     handleGenerateQrCodeAction (record) {
       axios.post('/qrcode/add', {

@@ -79,11 +79,6 @@ export default {
     }
   },
   inject: ['addPageRenderListener', 'renderPageView', 'setPageSubjectTitle', 'addPageBreadcrumb'],
-  computed: {
-    subject () {
-      return 'product'
-    }
-  },
   created () {
     const shopId = (this.$route.query && this.$route.query.shopId) || null
     if (shopId) {

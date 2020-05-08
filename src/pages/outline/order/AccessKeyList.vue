@@ -1,7 +1,6 @@
 <template>
   <a-card :bordered="false">
     <div class="table-operator">
-      <a-button type="primary" icon="plus" @click="handleAddAction">新建</a-button>
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
           <a-menu-item key="1" @click="handleDeleteBatchAction"><a-icon type="delete" />删除</a-menu-item>
@@ -17,18 +16,11 @@
       :columns="columns"
       :rowSelection="rowSelection"
     >
-      <span slot="title_slot" slot-scope="text, record">
-          {{ record.name }}
-      </span>
       <span slot="accesskey_slot" slot-scope="text, record">
-          <a @click="handleAccesskeyListAction(record)">{{record.accessKeyCount}}</a>
-          <a-divider type="vertical" />
-          <a @click="handleAddAccesskeyAction(record)">添加</a>
+        {{ record.accessKey.accessUrl }}
       </span>
         <span slot="action" slot-scope="text, record">
           <template>
-            <a @click="handleSyncAction(record)">同步</a>
-            <a-divider type="vertical" />
             <a @click="handleEditAction(record)">编辑</a>
             <a-divider type="vertical" />
             <a @click="handleDeleteAction(record)">删除</a>
@@ -42,26 +34,20 @@
 import { STable } from '@/components'
 import { PageView } from '@/layouts'
 import table from '@/mixins/table'
-import taxonomy from '@/pages/taxonomy/taxonomy'
-import { axios } from '@/utils/request'
 
 export default {
-  name: 'OutlineServerTable',
+  name: 'OutlineOrderAccessKeyTable',
   components: {
     PageView,
     STable
   },
-  mixins: [table, taxonomy],
+  mixins: [table],
   data () {
     return {
       columns: [
         {
           title: 'ID',
           dataIndex: 'id'
-        },
-        {
-          title: '名称',
-          scopedSlots: { customRender: 'title_slot' }
         },
         {
           title: 'AccessKey',
@@ -75,35 +61,14 @@ export default {
       ]
     }
   },
+  created () {
+    const orderId = (this.$route.query && this.$route.query.orderId) || null
+    if (orderId) {
+      this.queryParams.orderId = orderId
+    }
+  },
   inject: ['addPageRenderListener', 'renderPageView', 'setPageSubjectTitle', 'addPageBreadcrumb'],
   methods: {
-    handleAddAccesskeyAction (record) {
-      const routeName = 'outline-accesskey-save'
-      this.$router.push({
-        name: routeName,
-        query: { outlineServerId: record.id }
-      })
-    },
-    handleAccesskeyListAction (record) {
-      const routeName = 'outline-accesskey-list'
-      this.$router.push({
-        name: routeName,
-        query: { outlineServerId: record.id }
-      })
-    },
-    handleSyncAction (record) {
-      axios.post('/outline/server/sync', {
-        serverId: record.id
-      }).then(res => {
-        if (res.success) {
-          this.notify({
-            type: 'success',
-            message: '同步成功',
-            description: `${record.name} 已同步成功`
-          })
-        }
-      })
-    }
   }
 }
 </script>

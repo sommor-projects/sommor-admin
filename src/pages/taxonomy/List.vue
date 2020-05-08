@@ -85,11 +85,6 @@ export default {
       ]
     }
   },
-  computed: {
-    subject () {
-      return 'taxonomy'
-    }
-  },
   created () {
     const parent = this.$route.query && this.$route.query.parent
     if (parent) {
@@ -125,7 +120,7 @@ export default {
     handleAddAction () {
       const query = {}
       if (this.taxonomyDetail.key) {
-        query['parent'] = this.taxonomyDetail.key
+        query['taxonomy'] = this.taxonomyDetail.key
       }
       this.$router.push({
         name: this.resolveActionRouteName('save'),

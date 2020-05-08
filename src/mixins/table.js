@@ -1,6 +1,12 @@
 import { axios } from '@/utils/request'
 
 export default {
+  props: {
+    apiBasePath: {
+      type: String,
+      required: false
+    }
+  },
   data () {
     return {
       tableProps: {
@@ -31,10 +37,8 @@ export default {
       selectedRowKeys: [],
       selectedRows: [],
       queryParams: {},
-      addFormQuery: {},
+      addFormQueryParams: {},
       formQueryParams: {},
-      routeNamePrefix: '',
-      apiBasePath: '',
       searchForm: null
     }
   },
@@ -43,12 +47,8 @@ export default {
       this.queryParams = Object.assign(this.queryParams, this.$route.query)
       console.log('table queryParams', this.queryParams)
     }
-    this.apiBasePath = '/' + this.subject
   },
   computed: {
-    subject () {
-      throw new Error('computed [subject] must be override')
-    },
     rowSelection () {
       console.log('rowSelection')
       return {
@@ -60,7 +60,7 @@ export default {
   },
   methods: {
     resolveActionRouteName (action) {
-      return (this.routeNamePrefix || this.subject) + '-' + action
+      return this.getRouteNamePrefix() + '-' + action
     },
     refreshTable () {
       this.$refs.table.refresh()
@@ -78,7 +78,7 @@ export default {
       if (record) {
         query['id'] = record.id
       } else {
-        Object.assign(query, this.addFormQuery)
+        Object.assign(query, this.addFormQueryParams)
       }
       Object.assign(query, this.formQueryParams)
       const meta = this.$store.getters.routeMetas[routeName]

@@ -133,11 +133,6 @@ export default {
       ]
     }
   },
-  computed: {
-    subject () {
-      return 'shop'
-    }
-  },
   async created () {
     if (this.productTaxonomy) {
       const res = await axios({

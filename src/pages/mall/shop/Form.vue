@@ -34,27 +34,10 @@ export default {
   name: 'ShopForm',
   components: { PageView, SField, SFieldset },
   mixins: [form, taxonomy],
-  created () {
-  },
-  computed: {
-    subject () {
-      return 'shop'
-    }
-  },
   methods: {
     formSavedSuccessDescription (res) {
       const title = res.result.title
       return `${title} 保存成功`
-    },
-    formSubmitRedirectRoute () {
-      if (this.taxonomy && this.subject !== this.taxonomy) {
-        return {
-          name: this.subject + '-' + this.taxonomy + '-list'
-        }
-      }
-      return {
-        name: this.subject + '-list'
-      }
     }
   }
 }

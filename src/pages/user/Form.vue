@@ -39,9 +39,6 @@ export default {
     }
   },
   computed: {
-    subject () {
-      return 'user'
-    },
     pageTitle () {
       return this.formActionTitle + '用户'
     }

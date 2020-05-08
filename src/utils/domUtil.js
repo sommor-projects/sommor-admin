@@ -16,4 +16,4 @@ export const setDocumentTitle = function (title) {
   }
 }
 
-export const domTitle = 'Sommor'
+export const domTitle = '货有圈 -- 找好货，有圈子'

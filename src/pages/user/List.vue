@@ -67,11 +67,6 @@ export default {
         }
       ]
     }
-  },
-  computed: {
-    subject () {
-      return 'user'
-    }
   }
 }
 </script>

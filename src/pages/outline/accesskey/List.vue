@@ -56,6 +56,14 @@ export default {
           scopedSlots: { customRender: 'title_slot' }
         },
         {
+          title: 'accessUrl',
+          dataIndex: 'accessUrl'
+        },
+        {
+          title: '使用量',
+          dataIndex: 'usage'
+        },
+        {
           title: '操作',
           dataIndex: 'action',
           scopedSlots: { customRender: 'action' }
@@ -64,11 +72,6 @@ export default {
     }
   },
   inject: ['addPageRenderListener', 'renderPageView', 'setPageSubjectTitle', 'setPageSubjectTaxonomyTitle', 'addPageBreadcrumb'],
-  computed: {
-    subject () {
-      return 'outline-accesskey'
-    }
-  },
   created () {
     const outlineServerId = (this.$route.query && this.$route.query.outlineServerId) || null
     if (outlineServerId) {

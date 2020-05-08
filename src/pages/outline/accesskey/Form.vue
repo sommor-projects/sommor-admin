@@ -46,23 +46,14 @@ export default {
       }
     }
   },
-  computed: {
-    subject () {
-      return 'outline-accesskey'
-    }
-  },
   methods: {
     formSavedSuccessDescription (res) {
       const title = res.result.name
       return `${title} 保存成功`
     },
-    formSubmitRedirectRoute (res) {
-      const query = {
-        outlineServerId: res.result.outlineServerId
-      }
+    formSubmitRedirectRouteQuery (res) {
       return {
-        name: this.subject + '-list',
-        query
+        outlineServerId: res.result.outlineServerId
       }
     }
   }

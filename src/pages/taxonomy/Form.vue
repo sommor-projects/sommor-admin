@@ -84,11 +84,6 @@ export default {
       }
     }
   },
-  computed: {
-    subject () {
-      return 'taxonomy'
-    }
-  },
   methods: {
     addTaxonomyAttributeSettingAction () {
       const o = {

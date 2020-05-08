@@ -75,7 +75,15 @@ const AppDeviceEnquire = {
 
 const GlobalMixin = {
   methods: {
-    ...mapMutations(['notify'])
+    ...mapMutations(['notify']),
+    getRouteNamePrefix () {
+      const name = this.$route.name
+      const i = name.lastIndexOf('-')
+      if (i > 0) {
+        return name.substring(0, i)
+      }
+      return name
+    }
   }
 }
 

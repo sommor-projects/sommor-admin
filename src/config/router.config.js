@@ -35,15 +35,19 @@ export const asyncRouterMap = [
               {
                 path: '/outline/server/list',
                 name: 'outline-server-list',
+                props: {
+                  taxonomy: 'outline-server',
+                  apiBasePath: '/outline-server'
+                },
                 component: () => import('@/pages/outline/server/List'),
-                meta: { title: '列表', hideInBreadcrumb: true }
+                meta: { title: 'Outline服务器列表', hideInBreadcrumb: true }
               },
               {
                 path: '/outline/server/save',
                 name: 'outline-server-save',
                 props: {
                   taxonomy: 'outline-server',
-                  specifySubjectTaxonomy: false
+                  apiBasePath: '/outline-server'
                 },
                 component: () => import('@/pages/outline/server/Form'),
                 meta: { title: '保存', hideInBreadcrumb: true }
@@ -51,12 +55,18 @@ export const asyncRouterMap = [
               {
                 path: '/outline/accesskey',
                 name: 'outline-accesskey-list',
+                props: {
+                  apiBasePath: '/outline-accesskey'
+                },
                 component: () => import('@/pages/outline/accesskey/List'),
                 meta: { title: 'accessKey列表' }
               },
               {
                 path: '/outline/accesskey/save',
                 name: 'outline-accesskey-save',
+                props: {
+                  apiBasePath: '/outline-accesskey'
+                },
                 component: () => import('@/pages/outline/accesskey/Form'),
                 meta: { title: '保存', hideInBreadcrumb: true }
               }
@@ -76,9 +86,9 @@ export const asyncRouterMap = [
                 component: () => import('@/pages/mall/product/ProductSkuList'),
                 props: {
                   taxonomy: 'product:outline',
-                  specifySubjectTaxonomy: false
+                  apiBasePath: '/product'
                 },
-                meta: { title: '列表' }
+                meta: { title: 'Outline商品列表' }
               },
               {
                 path: '/outline/product/save',
@@ -86,9 +96,47 @@ export const asyncRouterMap = [
                 component: () => import('@/pages/mall/product/ProductSkuForm'),
                 props: {
                   taxonomy: 'product:outline',
-                  specifySubjectTaxonomy: false
+                  apiBasePath: '/product'
                 },
                 meta: { title: '保存', hideInBreadcrumb: true }
+              }
+            ]
+          },
+          {
+            path: '/outline/order',
+            name: 'outline-order',
+            component: RouteView,
+            meta: { title: '订单', icon: 'layout' },
+            hideChildrenInMenu: true,
+            redirect: '/outline/order/list',
+            children: [
+              {
+                path: '/outline/order/list',
+                name: 'outline-order-list',
+                component: () => import('@/pages/outline/order/List'),
+                props: {
+                  apiBasePath: '/outline/order',
+                  taxonomy: 'product:outline'
+                },
+                meta: { title: 'Outline订单列表' }
+              },
+              {
+                path: '/outline/order/save',
+                name: 'outline-order-save',
+                component: () => import('@/pages/mall/product/ProductSkuForm'),
+                props: {
+                  apiBasePath: '/outline/order'
+                },
+                meta: { title: '保存', hideInBreadcrumb: true }
+              },
+              {
+                path: '/outline/order/accesskey/list',
+                name: 'outline-order-accesskey-list',
+                component: () => import('@/pages/outline/order/AccessKeyList'),
+                props: {
+                  apiBasePath: '/outline/order/accesskey'
+                },
+                meta: { title: 'AccessKey列表' }
               }
             ]
           }
@@ -115,7 +163,7 @@ export const asyncRouterMap = [
                 component: () => import('@/pages/taxonomy/List'),
                 props: {
                   taxonomy: 'wine-region',
-                  specifySubjectTaxonomy: false
+                  apiBasePath: '/taxonomy'
                 },
                 meta: { title: '列表' }
               },
@@ -124,7 +172,7 @@ export const asyncRouterMap = [
                 name: 'taxonomy-wine-region-save',
                 props: {
                   taxonomy: 'wine-region',
-                  specifySubjectTaxonomy: false
+                  apiBasePath: '/taxonomy'
                 },
                 component: () => import('@/pages/taxonomy/Form'),
                 meta: { title: '保存' }
@@ -144,10 +192,10 @@ export const asyncRouterMap = [
                 name: 'shop-winery-list',
                 component: () => import('@/pages/mall/shop/List'),
                 props: {
-                  taxonomy: 'winery',
-                  productTaxonomy: 'wines',
+                  taxonomy: 'shop:winery',
+                  productTaxonomy: 'product:wines',
                   showSubjectTaxonomySearchField: false,
-                  specifySubjectTaxonomy: false
+                  apiBasePath: '/shop'
                 },
                 meta: { title: '列表', hideInBreadcrumb: true }
               },
@@ -156,8 +204,8 @@ export const asyncRouterMap = [
                 name: 'shop-winery-save',
                 component: () => import('@/pages/mall/shop/Form'),
                 props: {
-                  taxonomy: 'winery',
-                  specifySubjectTaxonomy: false
+                  taxonomy: 'shop:winery',
+                  apiBasePath: '/shop'
                 },
                 meta: { title: '保存', hideInBreadcrumb: true }
               },
@@ -173,8 +221,8 @@ export const asyncRouterMap = [
                     name: 'product-wines-list',
                     component: () => import('@/pages/mall/product/List'),
                     props: {
-                      taxonomy: 'wines',
-                      specifySubjectTaxonomy: false
+                      taxonomy: 'product:wines',
+                      apiBasePath: '/product'
                     },
                     meta: { title: '酒款列表', queryParamNames: ['shopId'] }
                   },
@@ -183,8 +231,8 @@ export const asyncRouterMap = [
                     name: 'product-wines-save',
                     component: () => import('@/pages/mall/product/Form'),
                     props: {
-                      taxonomy: 'wines',
-                      specifySubjectTaxonomy: false
+                      taxonomy: 'product:wines',
+                      apiBasePath: '/product'
                     },
                     meta: { title: '保存酒款', queryParamNames: ['shopId'] }
                   }
@@ -205,7 +253,8 @@ export const asyncRouterMap = [
                 name: 'post-wine-news-list',
                 component: () => import('@/pages/post/List'),
                 props: {
-                  taxonomy: 'wine-news'
+                  taxonomy: 'wine-news',
+                  apiBasePath: '/post'
                 },
                 meta: { title: '资讯列表', hideInBreadcrumb: true }
               },
@@ -214,7 +263,8 @@ export const asyncRouterMap = [
                 name: 'post-wine-news-save',
                 component: () => import('@/pages/post/Form'),
                 props: {
-                  taxonomy: 'wine-news'
+                  taxonomy: 'wine-news',
+                  apiBasePath: '/post'
                 },
                 meta: { title: '保存资讯', hideInBreadcrumb: true }
               }
@@ -243,7 +293,8 @@ export const asyncRouterMap = [
                 component: () => import('@/pages/mall/shop/List'),
                 props: {
                   taxonomy: 'shop',
-                  productTaxonomy: 'product'
+                  productTaxonomy: 'product',
+                  apiBasePath: '/shop'
                 },
                 meta: { title: '店铺列表', hideInBreadcrumb: true }
               },
@@ -252,7 +303,9 @@ export const asyncRouterMap = [
                 name: 'shop-save',
                 component: () => import('@/pages/mall/shop/Form'),
                 props: {
-                  taxonomy: 'shop'
+                  taxonomy: 'shop',
+                  specifySubjectTaxonomy: true,
+                  apiBasePath: '/shop'
                 },
                 meta: { title: '保存店铺', hideInBreadcrumb: true }
               }
@@ -271,7 +324,8 @@ export const asyncRouterMap = [
                 name: 'product-list',
                 component: () => import('@/pages/mall/product/List'),
                 props: {
-                  taxonomy: 'product'
+                  taxonomy: 'product',
+                  apiBasePath: '/product'
                 },
                 meta: { title: '商品列表', hideInBreadcrumb: true }
               },
@@ -280,7 +334,9 @@ export const asyncRouterMap = [
                 name: 'product-save',
                 component: () => import('@/pages/mall/product/Form'),
                 props: {
-                  taxonomy: 'product'
+                  taxonomy: 'product',
+                  specifySubjectTaxonomy: true,
+                  apiBasePath: '/product'
                 },
                 meta: { title: '商品保存', hideInBreadcrumb: true }
               },
@@ -289,7 +345,8 @@ export const asyncRouterMap = [
                 name: 'sku-list',
                 component: () => import('@/pages/mall/sku/List'),
                 props: {
-                  taxonomy: 'product'
+                  taxonomy: 'product',
+                  apiBasePath: '/sku'
                 },
                 meta: { title: '商品SKU列表', hideInBreadcrumb: true }
               },
@@ -298,7 +355,9 @@ export const asyncRouterMap = [
                 name: 'sku-save',
                 component: () => import('@/pages/mall/sku/Form'),
                 props: {
-                  taxonomy: 'product'
+                  taxonomy: 'product',
+                  specifySubjectTaxonomy: true,
+                  apiBasePath: '/sku'
                 },
                 meta: { title: '商品SKU保存', hideInBreadcrumb: true }
               }
@@ -315,15 +374,18 @@ export const asyncRouterMap = [
               {
                 path: '/mall/order/list',
                 name: 'order-list',
-                component: () => import('@/pages/mall/shop/List'),
                 props: {
-                  taxonomy: 'shop'
+                  apiBasePath: '/order'
                 },
+                component: () => import('@/pages/mall/order/List'),
                 meta: { title: '订单列表', hideInBreadcrumb: true }
               },
               {
                 path: '/mall/order/create',
                 name: 'order-create',
+                props: {
+                  apiBasePath: '/admin/order'
+                },
                 component: () => import('@/pages/mall/order/Form'),
                 meta: { title: '创建订单', hideInBreadcrumb: true }
               }
@@ -349,12 +411,18 @@ export const asyncRouterMap = [
               {
                 path: '/taxonomy/list',
                 name: 'taxonomy-list',
+                props: {
+                  apiBasePath: '/taxonomy'
+                },
                 component: () => import('@/pages/taxonomy/List'),
                 meta: { title: '分类列表', hideInBreadcrumb: true }
               },
               {
                 path: '/taxonomy/save',
                 name: 'taxonomy-save',
+                props: {
+                  apiBasePath: '/taxonomy'
+                },
                 component: () => import('@/pages/taxonomy/Form'),
                 meta: { title: '保存分类', hideInBreadcrumb: true }
               }
@@ -371,12 +439,18 @@ export const asyncRouterMap = [
               {
                 path: '/user/list',
                 name: 'user-list',
+                props: {
+                  apiBasePath: '/user'
+                },
                 component: () => import('@/pages/user/List'),
                 meta: { title: '用户列表', hideInBreadcrumb: true }
               },
               {
                 path: '/user/save',
                 name: 'user-save',
+                props: {
+                  apiBasePath: '/user'
+                },
                 component: () => import('@/pages/user/Form'),
                 meta: { title: '用户保存', hideInBreadcrumb: true }
               }
@@ -393,12 +467,18 @@ export const asyncRouterMap = [
               {
                 path: '/qrcode/list',
                 name: 'qrcode-list',
+                props: {
+                  apiBasePath: '/qrcode'
+                },
                 component: () => import('@/pages/qrcode/List'),
                 meta: { title: '二维码列表', hideInBreadcrumb: true }
               },
               {
                 path: '/qrcode/save',
                 name: 'qrcode-save',
+                props: {
+                  apiBasePath: '/qrcode'
+                },
                 component: () => import('@/pages/qrcode/Form'),
                 meta: { title: '二维码保存', hideInBreadcrumb: true }
               }
@@ -427,17 +507,17 @@ export const constantRouterMap = [
       {
         path: 'login',
         name: 'login',
-        component: () => import(/* webpackChunkName: "user" */ '@/views/user/Login')
+        component: () => import(/* webpackChunkName: "user" */ '@/pages/user/Login')
       },
       {
         path: 'register',
         name: 'register',
-        component: () => import(/* webpackChunkName: "user" */ '@/views/user/Register')
+        component: () => import(/* webpackChunkName: "user" */ '@/pages/user/Register')
       },
       {
         path: 'register-result',
         name: 'registerResult',
-        component: () => import(/* webpackChunkName: "user" */ '@/views/user/RegisterResult')
+        component: () => import(/* webpackChunkName: "user" */ '@/pages/user/RegisterResult')
       },
       {
         path: 'recover',
