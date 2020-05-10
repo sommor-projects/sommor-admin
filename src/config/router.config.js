@@ -393,6 +393,68 @@ export const asyncRouterMap = [
           }
         ]
       },
+
+      {
+        path: '/user',
+        name: 'user',
+        component: RouteView,
+        meta: { title: '用户', icon: 'layout' },
+        redirect: '/user/list',
+        children: [
+          {
+            path: '/user/list',
+            name: 'user-list',
+            props: {
+              apiBasePath: '/user'
+            },
+            component: () => import('@/pages/user/List'),
+            meta: { title: '所有用户', hideInBreadcrumb: true }
+          },
+          {
+            path: '/user/account/settings',
+            name: 'user-account-settings',
+            component: () => import('@/pages/user/account/settings/Index'),
+            meta: { title: '账号设置', hideHeader: true },
+            redirect: '/user/account/settings/base',
+            hideChildrenInMenu: true,
+            children: [
+              {
+                path: '/user/account/settings/base',
+                name: 'user-account-settings-base',
+                props: {
+                  apiBasePath: '/user/account/base'
+                },
+                component: () => import('@/pages/user/account/settings/BaseSetting'),
+                meta: { title: '基本设置' }
+              },
+              {
+                path: '/user/account/settings/security',
+                name: 'user-account-settings-security',
+                component: () => import('@/pages/user/account/settings/Security'),
+                meta: { title: '安全设置' }
+              },
+              {
+                path: '/user/account/settings/custom',
+                name: 'user-account-settings-custom',
+                component: () => import('@/pages/user/account/settings/Custom'),
+                meta: { title: '个性化设置' }
+              },
+              {
+                path: '/user/account/settings/binding',
+                name: 'user-account-settings-binding',
+                component: () => import('@/pages/user/account/settings/Binding'),
+                meta: { title: '账户绑定' }
+              },
+              {
+                path: '/user/account/settings/notification',
+                name: 'user-account-settings-notification',
+                component: () => import('@/pages/user/account/settings/Notification'),
+                meta: { title: '新消息通知' }
+              }
+            ]
+          }
+        ]
+      },
       {
         path: '/system',
         name: 'system',
@@ -425,34 +487,6 @@ export const asyncRouterMap = [
                 },
                 component: () => import('@/pages/taxonomy/Form'),
                 meta: { title: '保存分类', hideInBreadcrumb: true }
-              }
-            ]
-          },
-          {
-            path: '/user',
-            name: 'user',
-            component: PageView,
-            meta: { title: '用户', icon: 'layout' },
-            redirect: '/user/list',
-            hideChildrenInMenu: true,
-            children: [
-              {
-                path: '/user/list',
-                name: 'user-list',
-                props: {
-                  apiBasePath: '/user'
-                },
-                component: () => import('@/pages/user/List'),
-                meta: { title: '用户列表', hideInBreadcrumb: true }
-              },
-              {
-                path: '/user/save',
-                name: 'user-save',
-                props: {
-                  apiBasePath: '/user'
-                },
-                component: () => import('@/pages/user/Form'),
-                meta: { title: '用户保存', hideInBreadcrumb: true }
               }
             ]
           },

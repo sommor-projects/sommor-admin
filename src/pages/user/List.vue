@@ -17,11 +17,13 @@
       :columns="columns"
       :rowSelection="rowSelection"
     >
-
+        <span slot="account_slot" slot-scope="text, record">
+          <template>
+            <router-link :to="{ name: 'user-account-settings-base', query: {id: record.id} }">{{ record.userName }}</router-link>
+          </template>
+        </span>
         <span slot="action" slot-scope="text, record">
           <template>
-            <a @click="handleEditAction(record)">编辑</a>
-            <a-divider type="vertical" />
             <a @click="handleDeleteAction(record)">删除</a>
           </template>
         </span>
@@ -49,8 +51,8 @@ export default {
           dataIndex: 'id'
         },
         {
-          title: '用户名',
-          dataIndex: 'userName'
+          title: '账号',
+          scopedSlots: { customRender: 'account_slot' }
         },
         {
           title: '手机号',
@@ -66,6 +68,16 @@ export default {
           scopedSlots: { customRender: 'action' }
         }
       ]
+    }
+  },
+  methods: {
+    handleAccountSettings (record) {
+      this.$router.push({
+        name: 'user-account-settings-base',
+        query: {
+          id: record.id
+        }
+      })
     }
   }
 }

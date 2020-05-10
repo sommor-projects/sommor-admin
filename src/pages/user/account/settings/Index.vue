@@ -10,27 +10,27 @@
             type="inner"
             @openChange="onOpenChange"
           >
-            <a-menu-item key="/account/settings/base">
+            <a-menu-item key="/user/account/settings/base">
               <router-link :to="{ name: 'user-account-settings-base' }">
                 基本设置
               </router-link>
             </a-menu-item>
-            <a-menu-item key="/account/settings/security">
+            <a-menu-item key="/user/account/settings/security">
               <router-link :to="{ name: 'user-account-settings-security' }">
                 安全设置
               </router-link>
             </a-menu-item>
-            <a-menu-item key="/account/settings/custom">
+            <a-menu-item key="/user/account/settings/custom">
               <router-link :to="{ name: 'user-account-settings-custom' }">
                 个性化
               </router-link>
             </a-menu-item>
-            <a-menu-item key="/account/settings/binding">
+            <a-menu-item key="/user/account/settings/binding">
               <router-link :to="{ name: 'user-account-settings-binding' }">
                 账户绑定
               </router-link>
             </a-menu-item>
-            <a-menu-item key="/account/settings/notification">
+            <a-menu-item key="/user/account/settings/notification">
               <router-link :to="{ name: 'user-account-settings-notification' }">
                 新消息通知
               </router-link>
