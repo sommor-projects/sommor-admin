@@ -30,13 +30,8 @@ export default {
   },
   methods: {
     formSavedSuccessDescription (res) {
-      const title = res.result.title
+      const title = res.result.name
       return `${title} 保存成功`
-    },
-    formSubmitRedirectRouteQuery (res) {
-      return {
-        shopId: res.result.shopId
-      }
     }
   }
 }
