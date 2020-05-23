@@ -76,11 +76,14 @@ export default {
   },
   created () {
     if (this.$route.query) {
-      this.formRenderParam.parent = this.$route.query.parent || null
+      const taxonomy = this.$route.query.parent || this.$route.query.taxonomy || null
+      if (taxonomy) {
+        this.pageRenderParams.taxonomy = taxonomy
+      }
       if (this.$route.query.id) {
         this.pageRenderParams.id = this.$route.query.id
-      } else if (this.$route.query.parent) {
-        this.pageRenderParams.taxonomy = this.$route.query.parent
+      } else if (taxonomy) {
+        this.formRenderParam.parent = taxonomy
       }
     }
   },

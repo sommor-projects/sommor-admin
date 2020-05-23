@@ -43,7 +43,7 @@ export default {
     this.addPageRenderListener(this.onPageRender)
     const taxonomy = this.subjectTaxonomy
     console.log('taxonomy', taxonomy)
-    if (taxonomy && !(this.specifySubjectTaxonomy && taxonomy.indexOf(':') < 0)) {
+    if (taxonomy) {
       this.pageRenderParams.taxonomy = taxonomy
       if (this.formRenderParam) {
         this.formRenderParam.taxonomy = taxonomy
@@ -116,7 +116,7 @@ export default {
       this.form.validateFields((err, data) => {
         console.log('Received data of subject taxonomy select form: ', data)
         if (!err) {
-          const query = Object.assign({}, data, this.$route.query || {})
+          const query = Object.assign({}, this.$route.query || {}, data)
           const to = {
             name: this.getRouteNamePrefix() + '-save',
             query
