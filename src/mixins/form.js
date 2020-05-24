@@ -36,16 +36,22 @@ export default {
     }
     this.addFormSubmitDataFormatters(this.formatSubmitData)
   },
-  async mounted () {
-    this.$loading.show()
-    if (this.formRenderPath === '') {
-      this.formRenderPath = this.apiBasePath + '/form'
-    }
-    const res = await this.formRender()
-    this.initForm(res)
-    this.$loading.hide()
+  mounted () {
+    this.renderForm()
   },
   methods: {
+    renderForm () {
+      if (this.formRenderPath === '' && this.apiBasePath) {
+        this.formRenderPath = this.apiBasePath + '/form'
+      }
+      if (this.formRenderPath) {
+        this.$loading.show()
+        this.formRender().then(res => {
+          this.initForm(res)
+          this.$loading.hide()
+        })
+      }
+    },
     initForm (response) {
       if (response && response.success) {
         const form = response.result
@@ -148,14 +154,12 @@ export default {
           this.formSave(submitData).then(res => {
             console.log('submitForm response: ', res)
             if (res.success) {
-              this.onFormSavedSuccess(res)
-              if (submitFormRedirect === true) {
-                this.reload()
-              } else {
-                const to = submitFormRedirect || this.formSubmitRedirectRoute(res)
-                console.log('formSubmitRedirectRoute: ', to)
-                this.$router.push(to)
-              }
+              this.notify({
+                type: 'success',
+                message: this.formActionTitle + '成功',
+                description: this.formSavedSuccessDescription(res)
+              })
+              this.onFormSavedSuccess(res, submitFormRedirect)
             }
           })
         }
@@ -187,12 +191,14 @@ export default {
         }
       }
     },
-    onFormSavedSuccess (res) {
-      this.notify({
-        type: 'success',
-        message: this.formActionTitle + '成功',
-        description: this.formSavedSuccessDescription(res)
-      })
+    onFormSavedSuccess (res, submitFormRedirect) {
+      if (submitFormRedirect === true) {
+        this.reload()
+      } else {
+        const to = submitFormRedirect || this.formSubmitRedirectRoute(res)
+        console.log('formSubmitRedirectRoute: ', to)
+        this.$router.push(to)
+      }
     },
     formSavedSuccessDescription (res) {
       return this.formActionTitle + '成功'

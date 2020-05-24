@@ -11,27 +11,27 @@
             @openChange="onOpenChange"
           >
             <a-menu-item key="/user/account/settings/base">
-              <router-link :to="{ name: 'user-account-settings-base' }">
+              <router-link :to="{ name: 'user-account-settings-base', query }">
                 基本设置
               </router-link>
             </a-menu-item>
             <a-menu-item key="/user/account/settings/security">
-              <router-link :to="{ name: 'user-account-settings-security' }">
+              <router-link :to="{ name: 'user-account-settings-security', query }">
                 安全设置
               </router-link>
             </a-menu-item>
             <a-menu-item key="/user/account/settings/custom">
-              <router-link :to="{ name: 'user-account-settings-custom' }">
+              <router-link :to="{ name: 'user-account-settings-custom', query }">
                 个性化
               </router-link>
             </a-menu-item>
             <a-menu-item key="/user/account/settings/binding">
-              <router-link :to="{ name: 'user-account-settings-binding' }">
+              <router-link :to="{ name: 'user-account-settings-binding', query }">
                 账户绑定
               </router-link>
             </a-menu-item>
             <a-menu-item key="/user/account/settings/notification">
-              <router-link :to="{ name: 'user-account-settings-notification' }">
+              <router-link :to="{ name: 'user-account-settings-notification', query }">
                 新消息通知
               </router-link>
             </a-menu-item>
@@ -63,6 +63,8 @@ export default {
       // horizontal  inline
       mode: 'inline',
 
+      query: {},
+
       openKeys: [],
       selectedKeys: [],
 
@@ -88,6 +90,9 @@ export default {
     }
   },
   created () {
+    if (this.$route.query && this.$route.query.id) {
+      this.query.id = this.$route.query.id
+    }
     this.updateMenu()
   },
   methods: {

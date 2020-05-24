@@ -1,7 +1,6 @@
 <template>
   <a-card :bordered="false">
     <div class="table-operator">
-      <a-button type="primary" icon="plus" @click="handleAddAction">新建</a-button>
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
           <a-menu-item key="1" @click="handleDeleteBatchAction"><a-icon type="delete" />删除</a-menu-item>
@@ -17,9 +16,27 @@
       :columns="columns"
       :rowSelection="rowSelection"
     >
-        <span slot="account_slot" slot-scope="text, record">
+      <span slot="wx_nick_slot" slot-scope="text, record">
+        <a-avatar size="small" :src="record.avatar" />
+        <span class="member">{{ record.nickname }}</span>
+      </span>
+        <span slot="wx_id_slot" slot-scope="text, record">
           <template>
-            <a @click="handleAccountSettings(record)">{{ record.userName }}</a>
+            {{ record.openid }}
+            <template v-if="record.unionid">
+              <br />
+              {{ record.unionid }}
+            </template>
+          </template>
+        </span>
+      <span slot="account_slot" slot-scope="text, record">
+          <template>
+            <template v-if="record.userId > 0">
+              {{ record.userId }}
+            </template>
+            <template v-else>
+              <a @click="$refs.wechatUserAccountBindingForm.binding(record)">绑定</a>
+            </template>
           </template>
         </span>
         <span slot="action" slot-scope="text, record">
@@ -28,6 +45,7 @@
           </template>
         </span>
     </s-table>
+    <wechat-user-account-binding-form ref="wechatUserAccountBindingForm" />
   </a-card>
 </template>
 
@@ -35,32 +53,30 @@
 import { STable } from '@/components'
 import { PageView } from '@/layouts'
 import table from '@/mixins/table'
+import WechatUserAccountBindingForm from './WechatUserAccountBindingForm'
 
 export default {
-  name: 'TableList',
+  name: 'WechatUserTableList',
   components: {
     PageView,
-    STable
+    STable,
+    WechatUserAccountBindingForm
   },
   mixins: [table],
   data () {
     return {
       columns: [
         {
-          title: 'ID',
-          dataIndex: 'id'
+          title: '微信昵称',
+          scopedSlots: { customRender: 'wx_nick_slot' }
         },
         {
-          title: '账号',
+          title: 'OpenID',
+          scopedSlots: { customRender: 'wx_id_slot' }
+        },
+        {
+          title: '用户账号',
           scopedSlots: { customRender: 'account_slot' }
-        },
-        {
-          title: '手机号',
-          dataIndex: 'mobilePhone'
-        },
-        {
-          title: '昵称',
-          dataIndex: 'nickName'
         },
         {
           title: '操作',
@@ -71,14 +87,6 @@ export default {
     }
   },
   methods: {
-    handleAccountSettings (record) {
-      this.$router.push({
-        name: 'user-account-settings-base',
-        query: {
-          id: record.id
-        }
-      })
-    }
   }
 }
 </script>

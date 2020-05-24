@@ -397,7 +397,7 @@ export const asyncRouterMap = [
       {
         path: '/user',
         name: 'user',
-        component: RouteView,
+        component: PageView,
         meta: { title: '用户', icon: 'layout' },
         redirect: '/user/list',
         children: [
@@ -411,45 +411,64 @@ export const asyncRouterMap = [
             meta: { title: '所有用户', hideInBreadcrumb: true }
           },
           {
-            path: '/user/account/settings',
-            name: 'user-account-settings',
-            component: () => import('@/pages/user/account/settings/Index'),
-            meta: { title: '账号设置', hideHeader: true },
-            redirect: '/user/account/settings/base',
+            path: '/wechat/user/list',
+            name: 'wechat-user-list',
+            props: {
+              apiBasePath: '/wechat/user'
+            },
+            component: () => import('@/pages/wechat/user/List'),
+            meta: { title: '微信用户', hideInBreadcrumb: true }
+          },
+          {
+            path: '/user/account',
+            name: 'user-account',
+            component: RouteView,
+            meta: { title: '账号' },
+            redirect: '/user/account/settings',
             hideChildrenInMenu: true,
             children: [
               {
-                path: '/user/account/settings/base',
-                name: 'user-account-settings-base',
-                props: {
-                  apiBasePath: '/user/account/base'
-                },
-                component: () => import('@/pages/user/account/settings/BaseSetting'),
-                meta: { title: '基本设置' }
-              },
-              {
-                path: '/user/account/settings/security',
-                name: 'user-account-settings-security',
-                component: () => import('@/pages/user/account/settings/Security'),
-                meta: { title: '安全设置' }
-              },
-              {
-                path: '/user/account/settings/custom',
-                name: 'user-account-settings-custom',
-                component: () => import('@/pages/user/account/settings/Custom'),
-                meta: { title: '个性化设置' }
-              },
-              {
-                path: '/user/account/settings/binding',
-                name: 'user-account-settings-binding',
-                component: () => import('@/pages/user/account/settings/Binding'),
-                meta: { title: '账户绑定' }
-              },
-              {
-                path: '/user/account/settings/notification',
-                name: 'user-account-settings-notification',
-                component: () => import('@/pages/user/account/settings/Notification'),
-                meta: { title: '新消息通知' }
+                path: '/user/account/settings',
+                name: 'user-account-settings',
+                component: () => import('@/pages/user/account/settings/Index'),
+                meta: { title: '账号设置' },
+                redirect: '/user/account/settings/base',
+                hideChildrenInMenu: true,
+                children: [
+                  {
+                    path: '/user/account/settings/base',
+                    name: 'user-account-settings-base',
+                    props: {
+                      apiBasePath: '/user/account/base'
+                    },
+                    component: () => import('@/pages/user/account/settings/BaseSetting'),
+                    meta: { title: '基本设置' }
+                  },
+                  {
+                    path: '/user/account/settings/security',
+                    name: 'user-account-settings-security',
+                    component: () => import('@/pages/user/account/settings/Security'),
+                    meta: { title: '安全设置' }
+                  },
+                  {
+                    path: '/user/account/settings/custom',
+                    name: 'user-account-settings-custom',
+                    component: () => import('@/pages/user/account/settings/Custom'),
+                    meta: { title: '个性化设置' }
+                  },
+                  {
+                    path: '/user/account/settings/binding',
+                    name: 'user-account-settings-binding',
+                    component: () => import('@/pages/user/account/settings/Binding'),
+                    meta: { title: '账户绑定' }
+                  },
+                  {
+                    path: '/user/account/settings/notification',
+                    name: 'user-account-settings-notification',
+                    component: () => import('@/pages/user/account/settings/Notification'),
+                    meta: { title: '新消息通知' }
+                  }
+                ]
               }
             ]
           }
