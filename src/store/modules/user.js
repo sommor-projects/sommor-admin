@@ -8,10 +8,10 @@ function saveLoginUser (commit, loginUser) {
   commit('SET_TOKEN', loginUser.token)
   commit('SET_ROLES', loginUser.roles)
 
-  const userProfile = loginUser.userProfile
-  commit('SET_INFO', userProfile)
-  commit('SET_NAME', { name: userProfile.name, welcome: welcome() })
-  commit('SET_AVATAR', userProfile.avatar)
+  const account = loginUser.account
+  commit('SET_INFO', account)
+  commit('SET_NAME', { name: account.name, welcome: welcome() })
+  commit('SET_AVATAR', account.avatar)
 }
 
 const user = {
