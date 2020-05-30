@@ -23,6 +23,7 @@
 </template>
 <script>
 
+import { axios } from '@/utils/request'
 import Vue from 'vue'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
 
@@ -65,7 +66,7 @@ export default {
   methods: {
     addUploadedFile (item) {
       this.files.push({
-        mediaFileId: item.id,
+        id: item.id,
         uid: item.uri,
         name: item.title || (this.name + '-' + item.id),
         status: 'done',
@@ -87,9 +88,12 @@ export default {
       this.files = info.fileList
       console.log('files: ', this.files)
     },
-    handlePictureRemove (file) {
+    async handlePictureRemove (file) {
       console.log('handlePictureRemove', file)
-      return false
+      const res = await axios.post('/media/delete', {
+        id: file.id
+      })
+      return res.success
     }
   }
 }
