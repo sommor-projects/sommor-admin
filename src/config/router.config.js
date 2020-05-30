@@ -86,7 +86,7 @@ export const asyncRouterMap = [
                 component: () => import('@/pages/mall/product/ProductSkuList'),
                 props: {
                   taxonomy: 'product:outline',
-                  apiBasePath: '/product'
+                  apiBasePath: '/product-sku'
                 },
                 meta: { title: 'Outline商品列表' }
               },
@@ -96,7 +96,7 @@ export const asyncRouterMap = [
                 component: () => import('@/pages/mall/product/ProductSkuForm'),
                 props: {
                   taxonomy: 'product:outline',
-                  apiBasePath: '/product'
+                  apiBasePath: '/product-sku'
                 },
                 meta: { title: '保存', hideInBreadcrumb: true }
               }

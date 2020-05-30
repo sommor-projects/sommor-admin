@@ -2,9 +2,10 @@
   <div>
     <a-upload
       name="file"
-      action="/api/media/upload"
+      :action="action"
       listType="picture-card"
       :fileList="files"
+      :headers="headers"
       @preview="handlePreview"
       @change="handleChange"
       :remove="handlePictureRemove"
@@ -22,6 +23,9 @@
 </template>
 <script>
 
+import Vue from 'vue'
+import { ACCESS_TOKEN } from '@/store/mutation-types'
+
 export default {
   name: 'FileUploader',
   inject: ['getFormData', 'getFormField'],
@@ -37,11 +41,19 @@ export default {
       previewVisible: false,
       previewImage: '',
       files: [],
-      fileMaxCount: 1
+      fileMaxCount: 1,
+      action: '',
+      headers: {}
     }
   },
   created () {
-    this.fileMaxCount = this.getFormField(this.name).maxCount
+    const formField = this.getFormField(this.name)
+    this.fileMaxCount = formField.maxCount
+    this.action = formField.uploadUrl
+    const token = Vue.ls.get(ACCESS_TOKEN)
+    if (token) {
+      this.headers['X-Authentication'] = token
+    }
     const value = this.getFormData(this.name)
     console.log('fileUploader name: ', this.name, value)
     if (value) {
@@ -54,7 +66,6 @@ export default {
     addUploadedFile (item) {
       this.files.push({
         mediaFileId: item.id,
-        mediaSubjectRelationId: item.mediaSubjectRelationId,
         uid: item.uri,
         name: item.title || (this.name + '-' + item.id),
         status: 'done',
@@ -72,7 +83,6 @@ export default {
       console.log('handle file change: ', info)
       if (info.file.status === 'done') {
         this.getFormData(this.name).push(info.file.response.result)
-        info.file.mediaFileId = info.file.response.result.id
       }
       this.files = info.fileList
       console.log('files: ', this.files)

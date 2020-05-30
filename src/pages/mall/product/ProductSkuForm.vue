@@ -39,16 +39,13 @@ export default {
       if (this.$route.query.productId) {
         this.formRenderParam.productId = this.$route.query.productId
       }
-
-      console.log('apiBasePath', this.apiBasePath)
-      this.apiBasePath = '/product-sku'
     }
   },
   methods: {
     onFormRender (form) {
     },
     formSavedSuccessDescription (res) {
-      const title = res.result.title
+      const title = res.result.product.title
       return `${title} 保存成功`
     },
     formSubmitRedirectRoute (res) {
